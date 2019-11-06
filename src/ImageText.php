@@ -120,13 +120,6 @@ class ImageText
     protected $folderMode = 0755;
 
     /**
-     * Last text block size
-     *
-     * @var Array
-     */
-    protected $blockSize = ['width' => null, 'height' => null];
-
-    /**
      * Initialise the image with a file path, or dimensions, or pass no dimensions and
      * use setDimensionsFromImage to set dimensions from another image.
      *
@@ -295,9 +288,13 @@ class ImageText
 
         $info = new \stdClass();
 
+        if (!is_readable($file)) {
+            return false;
+        }
+
         list($width, $height, $type) = getimagesize($file);
 
-        switch($type){
+        switch ($type) {
             case IMAGETYPE_GIF:
                 if ($returnResource) {
                     $info->resource = imagecreatefromgif($file);
@@ -325,14 +322,14 @@ class ImageText
 
         $info->type = $type;
 
-		if($this->type === null){
-			$this->type = $type;
+        if ($this->type === null) {
+            $this->type = $type;
         }
 
-		$info->width = $width;
+        $info->width = $width;
         $info->height = $height;
 
-		return $info;
+        return $info;
     }
 
     /**
@@ -727,7 +724,7 @@ class ImageText
      * @param array $options
      * @return $this
      */
-    public function text($options = [])
+    public function text($options = [], &$boundary = [])
     {
         // Unset null values so they inherit defaults
         foreach ($options as $k => $v) {
@@ -758,19 +755,6 @@ class ImageText
         // Wrap text and find font size
         $options = $this->fitTobounds($options);
 
-        return $this->printText($options);
-    }
-
-    /**
-     * Draw text
-     *
-     * @param String $text
-     * @param array $options
-     * @see http://www.php.net/manual/en/function.imagefttext.php
-     * @return $this
-     */
-    protected function printText($options = [])
-    {
         extract($options);
 
         if ($debug) {
@@ -781,10 +765,7 @@ class ImageText
         $lines = explode("\n", $text);
 
         $fontHeight = $this->getFontHeight($fontSize, $angle, $fontFile, $lines);
-        $textHeight = $fontHeight * $this->lineHeight;
-
-        // Define block size
-        $blockSize = $this->blockSize;
+        $textHeight = $fontSize * $lineHeight;
 
         foreach ($lines as $index => $line) {
             $offsetx = 0;
@@ -825,16 +806,15 @@ class ImageText
             $textSize = imagefttext($this->img, $fontSize, $angle, $x + $offsetx, $lineY + $offsety, $textColor, $fontFile, $line);
 
             // Calc block height
-            $blockSize['height'] += $textHeight;
+            $boundary['height'] += $textHeight;
 
             // Calc block width
-            $blockSize['width'] = max($textWidth, $blockSize['width']);
+            $boundary['width'] = max($textWidth, $boundary['width']);
         }
 
-        $this->afterUpdate();
+        $boundary = array_map('intval', $boundary);
 
-        // Set block size using current text sizes
-        $this->blockSize = $blockSize;
+        $this->afterUpdate();
 
         return $this;
     }
@@ -1092,17 +1072,5 @@ class ImageText
         }
 
         return $this;
-    }
-
-    /**
-     * Get current text block sizes
-     *
-     * @param String $type
-     * @param String $quality
-     * @return $this
-     */
-    public function getBlockSize()
-    {
-        return $this->blockSize;
     }
 }
