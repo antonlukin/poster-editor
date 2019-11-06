@@ -1,0 +1,22 @@
+{
+    "name": "antonlukin/image-text",
+	"description": "Wrapper for PHP's GD Library for easy image manipulation",
+	"keywords": ["php", "image", "text", "gd"],
+	"homepage": "https://lukin.me",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Anton Lukin",
+			"email": "anton@lukin.me"
+		}
+	],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "files": [
+            "src/ImageText.php"
+        ]
+    }
+}
