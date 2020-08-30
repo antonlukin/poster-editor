@@ -767,6 +767,12 @@ class ImageText
         $fontHeight = $this->getFontHeight($fontSize, $angle, $fontFile, $lines);
         $textHeight = $fontSize * $lineHeight;
 
+        // Set default boundary
+        $boundary = [
+            'height' => 0,
+            'width' => 0,
+        ];
+
         foreach ($lines as $index => $line) {
             $offsetx = 0;
             $offsety = $fontHeight;
