@@ -508,15 +508,15 @@ class ImageText
                 imagejpeg($this->img, $path, $this->quality);
         }
 
+        if ($show) {
+            return $this->show();
+        }
+
         if ($destroy) {
-            $this->cleanup();
+            return $this->cleanup();
         }
 
-        if (!$show) {
-            return $this;
-        }
-
-        $this->show();
+        return $this;
     }
 
     /**
