@@ -7,7 +7,7 @@
  * Based on https://github.com/kus/php-image
  *
  * @version 1.0.0
- * @author Anton Lukin <anton@lukin.me>
+ * @author  Anton Lukin <anton@lukin.me>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -123,8 +123,8 @@ class ImageText
      * Initialise the image with a file path, or dimensions, or pass no dimensions and
      * use setDimensionsFromImage to set dimensions from another image.
      *
-     * @param string|integer $mixed (optional) file or width
-     * @param integer $height (optional)
+     * @param  string|integer $mixed  (optional) file or width
+     * @param  integer        $height (optional)
      * @return $this
      */
     public function __construct($mixed = null, $height = null)
@@ -151,8 +151,8 @@ class ImageText
     /**
      * Intialise the canvas
      *
-     * @param integer $width
-     * @param integer $height
+     * @param  integer $width
+     * @param  integer $height
      * @return $this
      */
     protected function initialiseCanvas($width, $height, $resource = 'img')
@@ -242,7 +242,7 @@ class ImageText
     /**
      * Set image resource (after using a raw gd command)
      *
-     * @param $resource
+     * @param  $resource
      * @return $this
      */
     public function setResource($resource)
@@ -257,7 +257,7 @@ class ImageText
     /**
      * Set image dimensions from an image source
      *
-     * @param String $file
+     * @param  String $file
      * @return $this
      */
     public function setDimensionsFromImage($file)
@@ -274,8 +274,8 @@ class ImageText
     /**
      * Check if an image (remote or local) is a valid image and return type, width, height and image resource
      *
-     * @param string $file
-     * @param boolean $returnResource
+     * @param  string  $file
+     * @param  boolean $returnResource
      * @return \stdClass
      */
     protected function getImageInfo($file, $returnResource = true)
@@ -295,29 +295,29 @@ class ImageText
         list($width, $height, $type) = getimagesize($file);
 
         switch ($type) {
-            case IMAGETYPE_GIF:
-                if ($returnResource) {
-                    $info->resource = imagecreatefromgif($file);
-                }
+        case IMAGETYPE_GIF:
+            if ($returnResource) {
+                $info->resource = imagecreatefromgif($file);
+            }
 
-                break;
+            break;
 
-            case IMAGETYPE_JPEG:
-                if ($returnResource) {
-                    $info->resource = imagecreatefromjpeg($file);
-                }
+        case IMAGETYPE_JPEG:
+            if ($returnResource) {
+                $info->resource = imagecreatefromjpeg($file);
+            }
 
-                break;
+            break;
 
-            case IMAGETYPE_PNG:
-                if ($returnResource) {
-                    $info->resource = imagecreatefrompng($file);
-                }
+        case IMAGETYPE_PNG:
+            if ($returnResource) {
+                $info->resource = imagecreatefrompng($file);
+            }
 
-                break;
+            break;
 
-            default:
-                return false;
+        default:
+            return false;
         }
 
         $info->type = $type;
@@ -347,10 +347,10 @@ class ImageText
     /**
      * Crop an image
      *
-     * @param integer $x
-     * @param integer $y
-     * @param integer $width
-     * @param integer $height
+     * @param  integer $x
+     * @param  integer $y
+     * @param  integer $width
+     * @param  integer $height
      * @return $this
      */
     public function crop($targetWidth, $targetHeight)
@@ -397,9 +397,9 @@ class ImageText
      * This function attempts to get the image to as close to the provided dimensions as possible, and then crops the
      * remaining overflow using the quadrant to get the image to be the size specified.
      *
-     * @param integer $targetWidth
-     * @param integer $targetHeight
-     * @param boolean $upscale
+     * @param  integer $targetWidth
+     * @param  integer $targetHeight
+     * @param  boolean $upscale
      * @return $this
      */
     public function resize($targetWidth, $targetHeight, $upscale = false)
@@ -447,21 +447,21 @@ class ImageText
     public function show()
     {
         switch ($this->type) {
-            case IMAGETYPE_GIF:
-                header('Content-type: image/gif');
-                imagegif($this->img, null);
+        case IMAGETYPE_GIF:
+            header('Content-type: image/gif');
+            imagegif($this->img, null);
 
-                break;
-            case IMAGETYPE_PNG:
-                header('Content-type: image/png');
-                imagepng($this->img, null, $this->quality);
+            break;
+        case IMAGETYPE_PNG:
+            header('Content-type: image/png');
+            imagepng($this->img, null, $this->quality);
 
-                break;
-            default:
-                header('Content-type: image/jpeg');
-                imagejpeg($this->img, null, $this->quality);
+            break;
+        default:
+            header('Content-type: image/jpeg');
+            imagejpeg($this->img, null, $this->quality);
 
-                break;
+            break;
         }
 
         $this->cleanup();
@@ -478,9 +478,9 @@ class ImageText
     /**
      * Save the image
      *
-     * @param String $path
-     * @param boolean $show
-     * @param boolean $destroy
+     * @param  String  $path
+     * @param  boolean $show
+     * @param  boolean $destroy
      * @return $this
      */
     public function save($path, $show = false, $destroy = true)
@@ -494,18 +494,18 @@ class ImageText
         }
 
         switch ($this->type) {
-            case IMAGETYPE_GIF:
-                imagegif($this->img, $path);
+        case IMAGETYPE_GIF:
+            imagegif($this->img, $path);
 
-                break;
+            break;
 
-            case IMAGETYPE_PNG:
-                imagepng($this->img, $path, $this->quality);
+        case IMAGETYPE_PNG:
+            imagepng($this->img, $path, $this->quality);
 
-                break;
+            break;
 
-            default:
-                imagejpeg($this->img, $path, $this->quality);
+        default:
+            imagejpeg($this->img, $path, $this->quality);
         }
 
         if ($show) {
@@ -522,7 +522,7 @@ class ImageText
     /**
      * Save the image and return object to continue operations
      *
-     * @param string $path
+     * @param  string $path
      * @return $this
      */
     public function snapshot($path)
@@ -543,13 +543,13 @@ class ImageText
     /**
      * Draw a line
      *
-     * @param integer $x1
-     * @param integer $y1
-     * @param integer $x2
-     * @param integer $y2
-     * @param array $color
-     * @param float $opacity
-     * @param boolean $dashed
+     * @param  integer $x1
+     * @param  integer $y1
+     * @param  integer $x2
+     * @param  integer $y2
+     * @param  array   $color
+     * @param  float   $opacity
+     * @param  boolean $dashed
      * @return $this
      */
     public function line($x1 = 0, $y1 = 0, $x2 = 100, $y2 = 100, $color = [0, 0, 0], $opacity = 1.0, $dashed = false)
@@ -568,14 +568,14 @@ class ImageText
     /**
      * Draw a rectangle
      *
-     * @param integer $x
-     * @param integer $y
-     * @param integer $width
-     * @param integer $height
-     * @param array $color
-     * @param float $opacity
-     * @param boolean $outline
-     * @see http://www.php.net/manual/en/function.imagefilledrectangle.php
+     * @param  integer $x
+     * @param  integer $y
+     * @param  integer $width
+     * @param  integer $height
+     * @param  array   $color
+     * @param  float   $opacity
+     * @param  boolean $outline
+     * @see    http://www.php.net/manual/en/function.imagefilledrectangle.php
      * @return $this
      */
     public function rectangle($x = 0, $y = 0, $width = 100, $height = 50, $color = [0, 0, 0], $opacity = 1.0, $outline = false)
@@ -594,14 +594,14 @@ class ImageText
     /**
      * Draw an ellipse
      *
-     * @param integer $x
-     * @param integer $y
-     * @param integer $width
-     * @param integer $height
-     * @param array $color
-     * @param float $opacity
-     * @param boolean $outline
-     * @see http://www.php.net/manual/en/function.imagefilledellipse.php
+     * @param  integer $x
+     * @param  integer $y
+     * @param  integer $width
+     * @param  integer $height
+     * @param  array   $color
+     * @param  float   $opacity
+     * @param  boolean $outline
+     * @see    http://www.php.net/manual/en/function.imagefilledellipse.php
      * @return $this
      */
     public function ellipse($x = 0, $y = 0, $width = 100, $height = 50, $color = [0, 0, 0], $opacity = 1.0, $outline = false)
@@ -620,11 +620,11 @@ class ImageText
     /**
      * Draw a polygon
      *
-     * @param array $points
-     * @param array $color
-     * @param float $opacity
-     * @param boolean $outline
-     * @see http://www.php.net/manual/en/function.imagefilledpolygon.php
+     * @param  array   $points
+     * @param  array   $color
+     * @param  float   $opacity
+     * @param  boolean $outline
+     * @see    http://www.php.net/manual/en/function.imagefilledpolygon.php
      * @return $this
      */
     public function polygon($points = [], $color = [0, 0, 0], $opacity = 1.0, $outline = false)
@@ -645,16 +645,16 @@ class ImageText
     /**
      * Draw an arc
      *
-     * @param integer $x
-     * @param integer $y
-     * @param integer $width
-     * @param integer $height
-     * @param integer $start
-     * @param integer $end
-     * @param array $color
-     * @param float $opacity
-     * @param boolean $outline
-     * @see http://www.php.net/manual/en/function.imagefilledarc.php
+     * @param  integer $x
+     * @param  integer $y
+     * @param  integer $width
+     * @param  integer $height
+     * @param  integer $start
+     * @param  integer $end
+     * @param  array   $color
+     * @param  float   $opacity
+     * @param  boolean $outline
+     * @see    http://www.php.net/manual/en/function.imagefilledarc.php
      * @return $this
      */
     public function arc($x = 0, $y = 0, $width = 100, $height = 50, $start = 0, $end = 180, $color = [0, 0, 0], $opacity = 1.0, $outline = false)
@@ -674,11 +674,11 @@ class ImageText
      *
      * Accepts x/y properties from CSS background-position (left, center, right, top, bottom, percentage and pixels)
      *
-     * @param String $file
-     * @param String|integer $x
-     * @param String|integer $y
-     * @see http://www.php.net/manual/en/function.imagecopyresampled.php
-     * @see http://www.w3schools.com/cssref/pr_background-position.asp
+     * @param  String         $file
+     * @param  String|integer $x
+     * @param  String|integer $y
+     * @see    http://www.php.net/manual/en/function.imagecopyresampled.php
+     * @see    http://www.w3schools.com/cssref/pr_background-position.asp
      * @return $this
      */
     public function draw($file, $x = '50%', $y = '50%')
@@ -720,8 +720,8 @@ class ImageText
     /**
      * Draw multi-line text box and auto wrap text
      *
-     * @param String $text
-     * @param array $options
+     * @param  String $text
+     * @param  array  $options
      * @return $this
      */
     public function text($options = [], &$boundary = [])
@@ -784,21 +784,21 @@ class ImageText
             $lineY = $y + ($textHeight * $index);
 
             switch ($alignHorizontal) {
-                case 'center':
-                    $offsetx += (($width - $textWidth) / 2);
-                    break;
-                case 'right':
-                    $offsetx += ($width - $textWidth);
-                    break;
+            case 'center':
+                $offsetx += (($width - $textWidth) / 2);
+                break;
+            case 'right':
+                $offsetx += ($width - $textWidth);
+                break;
             }
 
             switch ($alignVertical) {
-                case 'center':
-                    $offsety += (($height - ($textHeight * count($lines))) / 2);
-                    break;
-                case 'bottom':
-                    $offsety += ($height - ($textHeight * count($lines)));
-                    break;
+            case 'center':
+                $offsety += (($height - ($textHeight * count($lines))) / 2);
+                break;
+            case 'bottom':
+                $offsety += ($height - ($textHeight * count($lines)));
+                break;
             }
 
             if ($debug) {
@@ -828,8 +828,8 @@ class ImageText
     /**
      * Reduce font size to fit to width and height
      *
-     * @param String $text
-     * @param Array $options
+     * @param  String $text
+     * @param  Array  $options
      * @return integer
      */
     protected function fitToBounds($options)
@@ -864,10 +864,10 @@ class ImageText
     /**
      * Get font height
      *
-     * @param integer $fontSize
-     * @param integer $angle
-     * @param String $fontFile
-     * @param array lines
+     * @param  integer     $fontSize
+     * @param  integer     $angle
+     * @param  String      $fontFile
+     * @param  array lines
      * @return integer
      */
     protected function getFontHeight($fontSize, $angle, $fontFile, $lines)
@@ -889,11 +889,11 @@ class ImageText
     /**
      * Helper to wrap text
      *
-     * @param String $text
-     * @param integer $width
-     * @param integer $fontSize
-     * @param integer $angle
-     * @param String $fontFile
+     * @param  String  $text
+     * @param  integer $width
+     * @param  integer $fontSize
+     * @param  integer $angle
+     * @param  String  $fontFile
      * @return String
      */
     protected function wrap($options, $output = '')
@@ -925,7 +925,7 @@ class ImageText
     /**
      * Set's global folder mode if folder structure needs to be created
      *
-     * @param integer $mode
+     * @param  integer $mode
      * @return $this
      */
     public function setFolderMode($mode = 0755)
@@ -938,7 +938,7 @@ class ImageText
     /**
      * Set's global text size
      *
-     * @param integer $size
+     * @param  integer $size
      * @return $this
      */
     public function setFontSize($size = 12)
@@ -951,7 +951,7 @@ class ImageText
     /**
      * Set's global line height
      *
-     * @param float $lineHeight
+     * @param  float $lineHeight
      * @return $this
      */
     public function setLineHeight($lineHeight = 1.25)
@@ -964,7 +964,7 @@ class ImageText
     /**
      * Set's global text vertical alignment
      *
-     * @param String $align
+     * @param  String $align
      * @return $this
      */
     public function setAlignVertical($align = 'top')
@@ -977,7 +977,7 @@ class ImageText
     /**
      * Set's global text horizontal alignment
      *
-     * @param String $align
+     * @param  String $align
      * @return $this
      */
     public function setAlignHorizontal($align = 'left')
@@ -990,7 +990,7 @@ class ImageText
     /**
      * Set's global text color using RGB
      *
-     * @param array $color
+     * @param  array $color
      * @return $this
      */
     public function setTextColor($color = [255, 255, 255])
@@ -1003,7 +1003,7 @@ class ImageText
     /**
      * Set's global text angle
      *
-     * @param integer $angle
+     * @param  integer $angle
      * @return $this
      */
     public function setTextAngle($angle = 0)
@@ -1016,7 +1016,7 @@ class ImageText
     /**
      * Set's global text opacity
      *
-     * @param float $opacity
+     * @param  float $opacity
      * @return $this
      */
     public function setTextOpacity($opacity = 1.0)
@@ -1029,7 +1029,7 @@ class ImageText
     /**
      * Set's global font file for text from .ttf font file (TrueType)
      *
-     * @param string $fontFile
+     * @param  string $fontFile
      * @return $this
      */
     public function setFont($fontFile)
@@ -1042,7 +1042,7 @@ class ImageText
     /**
      * Set's global quality for PNG output
      *
-     * @param string $quality
+     * @param  string $quality
      * @return $this
      */
     public function setQuality($quality)
@@ -1055,22 +1055,22 @@ class ImageText
     /**
      * Set's global output type
      *
-     * @param String $type
-     * @param String $quality
+     * @param  String $type
+     * @param  String $quality
      * @return $this
      */
     public function setOutput($type, $quality = null)
     {
         switch (strtolower($type)) {
-            case 'gif':
-                $this->type = IMAGETYPE_GIF;
-                break;
-            case 'jpg':
-                $this->type = IMAGETYPE_JPEG;
-                break;
-            case 'png':
-                $this->type = IMAGETYPE_PNG;
-                break;
+        case 'gif':
+            $this->type = IMAGETYPE_GIF;
+            break;
+        case 'jpg':
+            $this->type = IMAGETYPE_JPEG;
+            break;
+        case 'png':
+            $this->type = IMAGETYPE_PNG;
+            break;
         }
 
         if ($quality !== null) {
