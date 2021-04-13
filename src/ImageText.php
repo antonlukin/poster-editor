@@ -3,14 +3,29 @@
  * Wrapper for PHP's GD Library for easy image manipulation to resize, crop
  * and draw images on top of each other preserving transparency, writing text
  * with transparency and drawing shapes.
+ * php version 7.1
  *
- * Based on https://github.com/kus/php-image
- *
- * @version 1.0.0
- * @author  Anton Lukin <anton@lukin.me>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @category PHP
+ * @package  ImageText
+ * @author   Anton Lukin <anton@lukin.me>
+ * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @link     https://github.com/antonlukin/image-text
  */
 
+namespace ImageText;
+
+use Exception;
+
+ /**
+  * Draw images, text and shapes using php-gd.
+  *
+  * @category PHP
+  * @package  ImageText
+  * @author   Anton Lukin <anton@lukin.me>
+  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
+  * @version  Release: 1.0.0
+  * @link     https://github.com/antonlukin/image-text
+  */
 class ImageText
 {
     /**
@@ -18,78 +33,7 @@ class ImageText
      *
      * @var resource
      */
-    protected $img;
-
-    /**
-     * Canvas resource
-     *
-     * @var resource
-     */
-    protected $imgCopy;
-
-    /**
-     * PNG Compression level: from 0 (no compression) to 9.
-     * JPEG Compression level: from 0 to 100 (no compression).
-     *
-     * @var integer
-     */
-    protected $quality = 90;
-
-    /**
-     * Global font file
-     *
-     * @var String
-     */
-    protected $fontFile;
-
-    /**
-     * Global font size
-     *
-     * @var integer
-     */
-    protected $fontSize = 12;
-
-    /**
-     * Global line height
-     *
-     * @var float
-     */
-    protected $lineHeight = 1.25;
-
-    /**
-     * Global text vertical alignment
-     *
-     * @var String
-     */
-    protected $alignVertical = 'top';
-
-    /**
-     * Global text horizontal alignment
-     *
-     * @var String
-     */
-    protected $alignHorizontal = 'left';
-
-    /**
-     * Global font color
-     *
-     * @var array
-     */
-    protected $textColor = [255, 255, 255];
-
-    /**
-     * Global text opacity
-     *
-     * @var float
-     */
-    protected $textOpacity = 1;
-
-    /**
-     * Global text angle
-     *
-     * @var integer
-     */
-    protected $textAngle = 0;
+    protected $resource;
 
     /**
      * Canvas width
@@ -113,141 +57,36 @@ class ImageText
     protected $type;
 
     /**
-     * Default folder mode to be used if folder structure needs to be created
-     *
-     * @var String
+     * Initialise the image.
      */
-    protected $folderMode = 0755;
-
-    /**
-     * Initialise the image with a file path, or dimensions, or pass no dimensions and
-     * use setDimensionsFromImage to set dimensions from another image.
-     *
-     * @param  string|integer $mixed  (optional) file or width
-     * @param  integer        $height (optional)
-     * @return $this
-     */
-    public function __construct($mixed = null, $height = null)
+    public function __construct()
     {
-        //Check if GD extension is loaded
         if (!extension_loaded('gd') && !extension_loaded('gd2')) {
-            return $this->handleError('GD is not loaded');
-        }
-
-        if ($mixed !== null) {
-            if ($height !== null) {
-                return $this->initialiseCanvas($mixed, $height);
-            }
-
-            if (is_string($mixed)) {
-                $image = $this->setDimensionsFromImage($mixed);
-                $image->draw($mixed);
-
-                return $image;
-            }
+            return new handleError('Extension php-gd is not loaded');
         }
     }
 
     /**
-     * Intialise the canvas
-     *
-     * @param  integer $width
-     * @param  integer $height
-     * @return $this
-     */
-    protected function initialiseCanvas($width, $height, $resource = 'img')
-    {
-        $this->width = $width;
-        $this->height = $height;
-
-        unset($this->$resource);
-
-        $this->$resource = imagecreatetruecolor($this->width, $this->height);
-
-        // Set the flag to save full alpha channel information
-        imagesavealpha($this->$resource, true);
-
-        // Turn off transparency blending (temporarily)
-        imagealphablending($this->$resource, false);
-
-        // Completely fill the background with transparent color
-        imagefilledrectangle($this->$resource, 0, 0, $this->width, $this->height, imagecolorallocatealpha($this->$resource, 0, 0, 0, 127));
-
-        // Restore transparency blending
-        imagealphablending($this->$resource, true);
-
-        return $this;
-    }
-
-    /**
-     * After we update the image run this function
-     */
-    protected function afterUpdate()
-    {
-        $this->shadowCopy();
-    }
-
-    /**
-     * Store a copy of the image to be used for clone
-     */
-    protected function shadowCopy()
-    {
-        $this->initialiseCanvas($this->width, $this->height, 'imgCopy');
-
-        imagecopy($this->imgCopy, $this->img, 0, 0, 0, 0, $this->width, $this->height);
-    }
-
-    /**
-     * Enable cloning of images in their current state
-     *
-     * $one = clone $image;
-     */
-    public function __clone()
-    {
-        $this->initialiseCanvas($this->width, $this->height);
-
-        imagecopy($this->img, $this->imgCopy, 0, 0, 0, 0, $this->width, $this->height);
-    }
-
-    /**
-     * Get image height
-     *
-     * @return int
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     * Get image width
-     *
-     * @return int
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * Get image resource (used when using a raw gd command)
+     * Get image resource to use raw gd commands.
      *
      * @return resource
      */
     public function getResource()
     {
-        return $this->img;
+        return $this->resource;
     }
 
     /**
-     * Set image resource (after using a raw gd command)
+     * Set image resource after using raw gd commands.
      *
-     * @param  $resource
+     * @param instance $resource Image resource.
+     *
      * @return $this
      */
     public function setResource($resource)
     {
-        $this->img = $resource;
+        $this->resource = $resource;
+
         $this->width = imagesx($resource);
         $this->height = imagesy($resource);
 
@@ -255,338 +94,450 @@ class ImageText
     }
 
     /**
-     * Set image dimensions from an image source
+     * Create resource using file path.
      *
-     * @param  String $file
-     * @return $this
-     */
-    public function setDimensionsFromImage($file)
-    {
-        if ($info = $this->getImageInfo($file, false)) {
-            $this->initialiseCanvas($info->width, $info->height);
-
-            return $this;
-        }
-
-        $this->handleError($file . ' is not readable!');
-    }
-
-    /**
-     * Check if an image (remote or local) is a valid image and return type, width, height and image resource
+     * @param string  $file Path to image file.
+     * @param integer $type Optional. File image type.
      *
-     * @param  string  $file
-     * @param  boolean $returnResource
-     * @return \stdClass
+     * @return instance
      */
-    protected function getImageInfo($file, $returnResource = true)
+    public function createResource($file, $type = null)
     {
-        if ($file instanceof ImageText) {
-            $file->resource = $file->img;
-
-            return $file;
+        if (is_null($type)) {
+            list($width, $height, $type) = getimagesize($file);
         }
-
-        $info = new \stdClass();
-
-        if (!is_readable($file)) {
-            return false;
-        }
-
-        list($width, $height, $type) = getimagesize($file);
 
         switch ($type) {
-        case IMAGETYPE_GIF:
-            if ($returnResource) {
-                $info->resource = imagecreatefromgif($file);
-            }
+            case IMAGETYPE_GIF:
+                $image = imagecreatefromgif($file);
+                break;
 
-            break;
+            case IMAGETYPE_JPEG:
+                $image = imagecreatefromjpeg($file);
+                break;
 
-        case IMAGETYPE_JPEG:
-            if ($returnResource) {
-                $info->resource = imagecreatefromjpeg($file);
-            }
+            case IMAGETYPE_PNG:
+                $image = imagecreatefrompng($file);
+                break;
 
-            break;
+            case IMAGETYPE_WEBP:
+                $image = imagecreatefromwebp($file);
 
-        case IMAGETYPE_PNG:
-            if ($returnResource) {
-                $info->resource = imagecreatefrompng($file);
-            }
-
-            break;
-
-        default:
-            return false;
+            default:
+                $this->handleError('Unsupported image type');
         }
 
-        $info->type = $type;
-
-        if ($this->type === null) {
-            $this->type = $type;
-        }
-
-        $info->width = $width;
-        $info->height = $height;
-
-        return $info;
+        return $image;
     }
 
     /**
-     * Handle errors
+     * Make new image instance from file.
      *
-     * @param String $error
+     * @param string $file Path to file.
      *
-     * @throws Exception
-     */
-    protected function handleError($error)
-    {
-        throw new \Exception($error);
-    }
-
-    /**
-     * Crop an image
-     *
-     * @param  integer $x
-     * @param  integer $y
-     * @param  integer $width
-     * @param  integer $height
      * @return $this
      */
-    public function crop($targetWidth, $targetHeight)
+    public function make($file)
     {
-        $width = $this->width;
-        $height = $this->height;
-
-        $ratio = $width / $height;
-
-        $x = 0;
-        $y = 0;
-
-        if ($targetWidth / $targetHeight > $ratio) {
-            // crop top/bottom
-            $newHeight = intval($targetWidth / $ratio);
-            $newWidth = $targetWidth;
-
-            $y = intval((($newHeight - $targetHeight) / 2) * ($height / $newHeight));
-        } else {
-            // crop sides
-            $newWidth = intval($targetHeight * $ratio);
-            $newHeight = $targetHeight;
-
-            $x = intval((($newWidth - $targetWidth) / 2) * ($width / $newWidth));
+        if (!is_readable($file)) {
+            return $this->handleError($file . ' is not a valid image');
         }
 
-        $tmp = $this->img;
+        // Get image dimensions.
+        list($width, $height, $type) = getimagesize($file);
 
-        $this->initialiseCanvas($targetWidth, $targetHeight);
+        $this->canvas($width, $height);
+        $this->insert($file);
 
-        imagecopyresampled($this->img, $tmp, 0, 0, $x, $y, $newWidth, $newHeight, $width, $height);
-        imagedestroy($tmp);
-
-        $this->afterUpdate();
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Resize image to desired dimensions.
+     * Intialise the canvas by width and height.
+     * Create square if the height param is empty.
      *
-     * Optionally crop the image using the quadrant.
+     * @param integer $width  Canvas width.
+     * @param integer $height Optional. Canvas height.
      *
-     * This function attempts to get the image to as close to the provided dimensions as possible, and then crops the
-     * remaining overflow using the quadrant to get the image to be the size specified.
-     *
-     * @param  integer $targetWidth
-     * @param  integer $targetHeight
-     * @param  boolean $upscale
      * @return $this
      */
-    public function resize($targetWidth, $targetHeight, $upscale = false)
+    public function canvas($width, $height = null)
     {
-        $width = $this->width;
-        $height = $this->height;
-
-        $ratio = $width / $height;
-
-        $x = 0;
-        $y = 0;
-
-        if ($targetWidth / $targetHeight > $ratio) {
-            $newWidth = intval($targetHeight * $ratio);
-            $newHeight = $targetHeight;
-        } else {
-            $newHeight = intval($targetWidth / $ratio);
-            $newWidth = $targetWidth;
+        if ($height === null) {
+            $height = $width;
         }
 
-        if ($upscale === false) {
-            if ($newWidth > $width) {
-                $newWidth = $width;
-            }
+        unset($this->resource);
 
-            if ($newHeight > $height) {
-                $newHeight = $height;
-            }
-        }
+        $this->resource = imagecreatetruecolor($width, $height);
 
-        $tmp = $this->img;
-        $this->initialiseCanvas($newWidth, $newHeight);
+        // Set the flag to save full alpha channel information
+        imagesavealpha($this->resource, true);
 
-        imagecopyresampled($this->img, $tmp, 0, 0, $x, $y, $newWidth, $newHeight, $width, $height);
-        imagedestroy($tmp);
+        // Turn off transparency blending (temporarily)
+        imagealphablending($this->resource, false);
 
-        $this->afterUpdate();
+        $color = imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
+
+        // Completely fill the background with transparent color
+        imagefilledrectangle($this->resource, 0, 0, $width, $height, $color);
+
+        // Restore transparency blending
+        imagealphablending($this->resource, true);
+
+        $this->width = $width;
+        $this->height = $height;
 
         return $this;
     }
 
     /**
-     * Shows the resulting image and cleans up.
+     * Attach image to new HTTP response.
+     *
+     * Sends HTTP response with current image in given format and quality.
+     * Quality is not applied for PNG compression.
+     *
+     * @param integer $quality Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string  $format  File image extension. By default use type from make or insert function.
+     *
+     * @return void
      */
-    public function show()
+    public function show($quality = 90, $format = null)
     {
+        if (!is_null($format)) {
+            $this->setType($format);
+        }
+
+        $quality = $this->getParam($quality, 0, 100);
+
         switch ($this->type) {
-        case IMAGETYPE_GIF:
-            header('Content-type: image/gif');
-            imagegif($this->img, null);
+            case IMAGETYPE_GIF:
+                header('Content-type: image/gif');
+                imagegif($this->resource, null);
+                break;
 
-            break;
-        case IMAGETYPE_PNG:
-            header('Content-type: image/png');
-            imagepng($this->img, null, $this->quality);
+            case IMAGETYPE_PNG:
+                header('Content-type: image/png');
+                imagepng($this->resource, null, min(floor(10 - $quality / 10), 9));
+                break;
 
-            break;
-        default:
-            header('Content-type: image/jpeg');
-            imagejpeg($this->img, null, $this->quality);
+            case IMAGETYPE_WEBP:
+                header('Content-type: image/webp');
+                imagewebp($this->resource, null, $quality);
+                break;
 
-            break;
+            default:
+                header('Content-type: image/jpeg');
+                imagejpeg($this->resource, null, $quality);
+                break;
         }
 
-        $this->cleanup();
-    }
-
-    /**
-     * Cleanup
-     */
-    public function cleanup()
-    {
-        imagedestroy($this->img);
+        return $this->cleanup();
     }
 
     /**
      * Save the image
      *
-     * @param  String  $path
-     * @param  boolean $show
-     * @param  boolean $destroy
+     * @param string  $path    Path to the file where to write the image data.
+     * @param integer $quality Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string  $format  File image extension. By default use from path.
+     *
      * @return $this
      */
-    public function save($path, $show = false, $destroy = true)
+    public function save($path, $quality = 90, $format = null)
     {
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), $this->folderMode, true);
+        $folder = dirname($path);
+
+        if (!is_writable($folder)) {
+            $this->handleError($folder . ' is not writable');
         }
 
-        if (!is_writable(dirname($path))) {
-            return $this->handleError(dirname($path) . ' is not writable and failed to create directory structure!');
+        if (is_null($format)) {
+            $format = pathinfo($path, PATHINFO_EXTENSION);
         }
+
+        if (strlen($format) > 0) {
+            $this->setType($format);
+        }
+
+        $quality = $this->getParam($quality, 0, 100);
 
         switch ($this->type) {
-        case IMAGETYPE_GIF:
-            imagegif($this->img, $path);
+            case IMAGETYPE_GIF:
+                imagegif($this->resource, $path);
+                break;
 
-            break;
+            case IMAGETYPE_PNG:
+                imagepng($this->resource, $path, min(floor(10 - $quality / 10), 9));
+                break;
 
-        case IMAGETYPE_PNG:
-            imagepng($this->img, $path, $this->quality);
+            case IMAGETYPE_WEBP:
+                imagewebp($this->resource, $path, $quality);
+                break;
 
-            break;
-
-        default:
-            imagejpeg($this->img, $path, $this->quality);
+            default:
+                imagejpeg($this->resource, $path, $quality);
         }
 
-        if ($show) {
-            return $this->show();
+        return $this->cleanup();
+    }
+
+    /**
+     * Destroy image resource.
+     *
+     * @return void
+     */
+    public function cleanup()
+    {
+        imagedestroy($this->resource);
+    }
+
+    /**
+     * Returns the height in pixels of the current image.
+     *
+     * @return int
+     */
+    public function height()
+    {
+        return $this->height;
+    }
+
+    /**
+     * Returns the width in pixels of the current image.
+     *
+     * @return int
+     */
+    public function width()
+    {
+        return $this->width;
+    }
+
+    /**
+     * Resize image to desired dimensions.
+     *
+     * Resizes current image based on given width and height.
+     * Scale param set constraint the current aspect-ratio of the image.
+     *
+     * @param integer $width  Target image width.
+     * @param integer $height Target image height.
+     * @param boolean $scale  Optional. Constraint the current aspect-ratio of the image.
+     * @param boolean $upsize Optional. Keep image from being upsized. Aplies on scale true.
+     *
+     * @return $this
+     */
+    public function resize($width, $height, $scale = true, $upsize = true)
+    {
+        $info = array(
+            'width'  => $this->width,
+            'height' => $this->height,
+        );
+
+        if ($scale) {
+            $ratio = $info['width'] / $info['height'];
+
+            if ($upsize) {
+                if ($width / $height > $ratio) {
+                    $width = intval($height * $ratio);
+                } else {
+                    $height = intval($width / $ratio);
+                }
+            } else {
+                if ($width / $height > $ratio) {
+                    $height = intval($width / $ratio);
+                } else {
+                    $width = intval($height * $ratio);
+                }
+            }
         }
 
-        if ($destroy) {
-            return $this->cleanup();
-        }
+        $temp = $this->resource;
+        $this->canvas($width, $height);
+
+        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $info['width'], $info['height']);
+        imagedestroy($temp);
 
         return $this;
     }
 
     /**
-     * Save the image and return object to continue operations
+     * Crop an image.
      *
-     * @param  string $path
+     * Cut out a rectangular part of the current image with given width and height.
+     * Define optional x,y coordinates to move the top-left corner of the cutout to a certain position.
+     *
+     * @param integer      $width  Width of the rectangular cutout.
+     * @param integer      $height Height of the rectangular cutout.
+     * @param integer|null $x      Optional. X coordinate from left. By default will be centered on the current image.
+     * @param integer|null $y      Optional. Y coordinate from top. By default will be centered on the current image.
+     *
      * @return $this
      */
-    public function snapshot($path)
+    public function crop($width, $height, $x = null, $y = null)
     {
-        return $this->save($path, false, false);
-    }
+        $info = array(
+            'width'  => $this->width,
+            'height' => $this->height,
+        );
 
-    /**
-     * Save the image and show it
-     *
-     * @param string $path
-     */
-    public function showAndSave($path)
-    {
-        $this->save($path, true);
-    }
+        $ratio = $info['width'] / $info['height'];
 
-    /**
-     * Draw a line
-     *
-     * @param  integer $x1
-     * @param  integer $y1
-     * @param  integer $x2
-     * @param  integer $y2
-     * @param  array   $color
-     * @param  float   $opacity
-     * @param  boolean $dashed
-     * @return $this
-     */
-    public function line($x1 = 0, $y1 = 0, $x2 = 100, $y2 = 100, $color = [0, 0, 0], $opacity = 1.0, $dashed = false)
-    {
-        if ($dashed === true) {
-            imagedashedline($this->img, $x1, $y1, $x2, $y2, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-        } else {
-            imageline($this->img, $x1, $y1, $x2, $y2, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
+        if (is_null($x)) {
+            $x = intval(($info['width'] - $width) / 2);
         }
 
-        $this->afterUpdate();
+        if (is_null($y)) {
+            $y = intval(($info['height'] - $height) / 2);
+        }
+
+        $temp = $this->resource;
+        $this->canvas($width, $height);
+
+        imagecopyresampled($this->resource, $temp, 0, 0, $x, $y, $width, $height, $width, $height);
+        imagedestroy($temp);
 
         return $this;
     }
 
     /**
-     * Draw a rectangle
+     * Crop and resize combined.
      *
-     * @param  integer $x
-     * @param  integer $y
-     * @param  integer $width
-     * @param  integer $height
-     * @param  array   $color
-     * @param  float   $opacity
-     * @param  boolean $outline
-     * @see    http://www.php.net/manual/en/function.imagefilledrectangle.php
+     * Combine cropping and resizing to format image in a smart way.
+     * The method will find the best fitting aspect ratio on the current image automatically,
+     * cut it out and resize it to the given dimension.
+     *
+     * @param integer $width    Target image width.
+     * @param integer $height   Target image height.
+     * @param string  $position Optional. Crop position.
+     *
      * @return $this
      */
-    public function rectangle($x = 0, $y = 0, $width = 100, $height = 50, $color = [0, 0, 0], $opacity = 1.0, $outline = false)
+    public function fit($width, $height, $position = 'center')
     {
-        if ($outline === true) {
-            imagerectangle($this->img, $x, $y, $x + $width, $y + $height, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-        } else {
-            imagefilledrectangle($this->img, $x, $y, $x + $width, $y + $height, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
+        // Resize without upsizing.
+        $this->resize($width, $height, true, false);
+
+        $info = array(
+            'width'  => $this->width,
+            'height' => $this->height,
+        );
+
+        $x = 0;
+        $y = 0;
+
+        switch ($position) {
+            case 'top-left':
+                break;
+
+            case 'top':
+                $x = intval(($info['width'] - $width) / 2);
+                break;
+
+            case 'top-right':
+                $x = intval($info['width'] - $width);
+                break;
+
+            case 'bottom-left':
+                $y = intval($info['height'] - $height);
+                break;
+
+            case 'bottom':
+                $x = intval(($info['width'] - $width) / 2);
+                $y = intval($info['height'] - $height);
+                break;
+
+            case 'bottom-right':
+                $x = intval($info['width'] - $width);
+                $y = intval($info['height'] - $height);
+                break;
+
+            case 'right':
+                $x = intval($info['width'] - $width);
+                $y = intval(($info['height'] - $height) / 2);
+                break;
+
+            case 'left':
+                $y = intval(($info['height'] - $height) / 2);
+                break;
+            default:
+                $x = intval(($info['width'] - $width) / 2);
+                $y = intval(($info['height'] - $height) / 2);
         }
 
-        $this->afterUpdate();
+        $this->crop($width, $height, $x, $y);
+
+        return $this;
+    }
+
+    /**
+     * Draw a line from x,y point 1 to x,y point 2 on current image.
+     *
+     * @param integer $x1      X-Coordinate of the starting point.
+     * @param integer $y1      Y-Coordinate of the starting point.
+     * @param integer $x2      X-Coordinate of the end point.
+     * @param integer $y2      Y-Coordinate of the end point.
+     * @param array   $options Optional. List of line options.
+     *
+     * @return $this
+     */
+    public function line($x1, $y1, $x2, $y2, $options = array())
+    {
+        $defaults = array(
+            'color'   => array(0, 0, 0),
+            'opacity' => 0,
+            'width'   => 1,
+        );
+
+        $options = array_merge($defaults, $options);
+
+        // Get color from options.
+        $color = $this->getColor($options);
+
+        imagesetthickness($this->resource, $options['width']);
+
+        // Draw new line.
+        imageline($this->resource, $x1, $y1, $x2, $y2, $color);
+
+        imagesetthickness($this->resource, 1);
+
+        return $this;
+    }
+
+    /**
+     * Draw a colored rectangle on current image.
+     *
+     * @param integer $x       X-Coordinate of the starting point.
+     * @param integer $y       Y-Coordinate of the starting point.
+     * @param integer $width   Width in pixels.
+     * @param integer $height  Height in pixels.
+     * @param array   $options Optional. List of line options.
+     *
+     * @return $this
+     */
+    public function rectangle($x, $y, $width, $height, $options = array())
+    {
+        $defaults = array(
+            'color'   => array(0, 0, 0),
+            'opacity' => 0,
+            'width'   => 1,
+            'outline' => false,
+        );
+
+        $options = array_merge($defaults, $options);
+
+        // Get color from options.
+        $color = $this->getColor($options);
+
+        imagesetthickness($this->resource, $options['width']);
+
+        if ($options['outline']) {
+            imagerectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
+        } else {
+            imagefilledrectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
+        }
+
+        imagesetthickness($this->resource, 1);
 
         return $this;
     }
@@ -594,489 +545,442 @@ class ImageText
     /**
      * Draw an ellipse
      *
-     * @param  integer $x
-     * @param  integer $y
-     * @param  integer $width
-     * @param  integer $height
-     * @param  array   $color
-     * @param  float   $opacity
-     * @param  boolean $outline
-     * @see    http://www.php.net/manual/en/function.imagefilledellipse.php
+     * @param integer $x       X-Coordinate of the center point.
+     * @param integer $y       Y-Coordinate of the center point.
+     * @param integer $width   Width in pixels.
+     * @param integer $height  Height in pixels.
+     * @param array   $options Optional. List of line options.
+     *
      * @return $this
      */
-    public function ellipse($x = 0, $y = 0, $width = 100, $height = 50, $color = [0, 0, 0], $opacity = 1.0, $outline = false)
+    public function ellipse($x, $y, $width, $height, $options = array())
     {
-        if ($outline === true) {
-            imageellipse($this->img, $x, $y, $width, $height, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-        } else {
-            imagefilledellipse($this->img, $x, $y, $width, $height, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-        }
-
-        $this->afterUpdate();
-
-        return $this;
-    }
-
-    /**
-     * Draw a polygon
-     *
-     * @param  array   $points
-     * @param  array   $color
-     * @param  float   $opacity
-     * @param  boolean $outline
-     * @see    http://www.php.net/manual/en/function.imagefilledpolygon.php
-     * @return $this
-     */
-    public function polygon($points = [], $color = [0, 0, 0], $opacity = 1.0, $outline = false)
-    {
-        if (count($points) > 0) {
-            if ($outline === true) {
-                imagepolygon($this->img, $points, count($points) / 2, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-            } else {
-                imagefilledpolygon($this->img, $points, count($points) / 2, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-            }
-
-            $this->afterUpdate();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Draw an arc
-     *
-     * @param  integer $x
-     * @param  integer $y
-     * @param  integer $width
-     * @param  integer $height
-     * @param  integer $start
-     * @param  integer $end
-     * @param  array   $color
-     * @param  float   $opacity
-     * @param  boolean $outline
-     * @see    http://www.php.net/manual/en/function.imagefilledarc.php
-     * @return $this
-     */
-    public function arc($x = 0, $y = 0, $width = 100, $height = 50, $start = 0, $end = 180, $color = [0, 0, 0], $opacity = 1.0, $outline = false)
-    {
-        if ($outline === true) {
-            imagearc($this->img, $x, $y, $width, $height, $start, $end, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127));
-        } else {
-            imagefilledarc($this->img, $x, $y, $width, $height, $start, $end, imagecolorallocatealpha($this->img, $color[0], $color[1], $color[2], (1 - $opacity) * 127), IMG_ARC_PIE);
-        }
-        $this->afterUpdate();
-
-        return $this;
-    }
-
-    /**
-     * Draw an image from file
-     *
-     * Accepts x/y properties from CSS background-position (left, center, right, top, bottom, percentage and pixels)
-     *
-     * @param  String         $file
-     * @param  String|integer $x
-     * @param  String|integer $y
-     * @see    http://www.php.net/manual/en/function.imagecopyresampled.php
-     * @see    http://www.w3schools.com/cssref/pr_background-position.asp
-     * @return $this
-     */
-    public function draw($file, $x = '50%', $y = '50%')
-    {
-        $info = $this->getImageInfo($file);
-
-        if (!$info) {
-            return $this->handleError($file . ' is not a valid image!');
-        }
-
-        $image = $info->resource;
-        $width = $info->width;
-        $height = $info->height;
-
-        if (!is_numeric($x)) {
-            $x = '50%';
-
-            if (strpos($x, '%') !== false) {
-                $x = ceil(($this->width - $width) * (trim($x, '%') / 100));
-            }
-        }
-
-        if (!is_numeric($y)) {
-            $y = '50%';
-
-            if (strpos($y, '%') !== false) {
-                $y = ceil(($this->height - $height) * (trim($y, '%') / 100));
-            }
-        }
-
-        // Draw image
-        imagecopyresampled($this->img, $image, $x, $y, 0, 0, $width, $height, $width, $height);
-        imagedestroy($image);
-        $this->afterUpdate();
-
-        return $this;
-    }
-
-    /**
-     * Draw multi-line text box and auto wrap text
-     *
-     * @param  String $text
-     * @param  array  $options
-     * @return $this
-     */
-    public function text($options = [], &$boundary = [])
-    {
-        // Unset null values so they inherit defaults
-        foreach ($options as $k => $v) {
-            if ($options[$k] === null) {
-                unset($options[$k]);
-            }
-        }
-
-        $defaults = [
-            'text' => '',
-            'x' => 0,
-            'y' => 0,
-            'width' => null,
-            'height' => null,
-            'fontSize' => $this->fontSize,
-            'fontColor' => $this->textColor,
-            'opacity' => $this->textOpacity,
-            'alignHorizontal' => $this->alignHorizontal,
-            'alignVertical' => $this->alignVertical,
-            'angle' => $this->textAngle,
-            'fontFile' => $this->fontFile,
-            'lineHeight' => $this->lineHeight,
-            'debug' => false,
-        ];
+        $defaults = array(
+            'color'   => array(0, 0, 0),
+            'opacity' => 0,
+            'outline' => false,
+        );
 
         $options = array_merge($defaults, $options);
 
-        // Wrap text and find font size
-        $options = $this->fitTobounds($options);
+        // Get color from options.
+        $color = $this->getColor($options);
 
-        extract($options);
-
-        if ($debug) {
-            $this->rectangle($x, $y, $width, $height, [0, 255, 255], 0.5);
+        if ($options['outline']) {
+            imageellipse($this->resource, $x, $y, $width, $height, $color);
+        } else {
+            imagefilledellipse($this->resource, $x, $y, $width, $height, $color);
         }
-
-        // Split lines
-        $lines = explode("\n", $text);
-
-        $fontHeight = $this->getFontHeight($fontSize, $angle, $fontFile, $lines);
-        $textHeight = $fontSize * $lineHeight;
-
-        // Set default boundary
-        $boundary = [
-            'height' => 0,
-            'width' => 0,
-        ];
-
-        foreach ($lines as $index => $line) {
-            $offsetx = 0;
-            $offsety = $fontHeight;
-
-            // Get Y offset as it 0 Y is the lower-left corner of the character
-            $testbox = imageftbbox($fontSize, $angle, $fontFile, $line);
-
-            $textWidth = abs($testbox[6] - $testbox[4]);
-            $lineY = $y + ($textHeight * $index);
-
-            switch ($alignHorizontal) {
-            case 'center':
-                $offsetx += (($width - $textWidth) / 2);
-                break;
-            case 'right':
-                $offsetx += ($width - $textWidth);
-                break;
-            }
-
-            switch ($alignVertical) {
-            case 'center':
-                $offsety += (($height - ($textHeight * count($lines))) / 2);
-                break;
-            case 'bottom':
-                $offsety += ($height - ($textHeight * count($lines)));
-                break;
-            }
-
-            if ($debug) {
-                $blockColor = [rand(150, 255), rand(150, 255), rand(150, 255)];
-                $this->rectangle($x + $offsetx, $lineY + $offsety - $fontHeight, $textWidth, $textHeight, $blockColor, 0.5);
-            }
-
-            $textColor = imagecolorallocatealpha($this->img, $fontColor[0], $fontColor[1], $fontColor[2], (1 - $opacity) * 127);
-
-            // Draw text
-            $textSize = imagefttext($this->img, $fontSize, $angle, $x + $offsetx, $lineY + $offsety, $textColor, $fontFile, $line);
-
-            // Calc block height
-            $boundary['height'] += $textHeight;
-
-            // Calc block width
-            $boundary['width'] = max($textWidth, $boundary['width']);
-        }
-
-        $boundary = array_map('intval', $boundary);
-
-        $this->afterUpdate();
 
         return $this;
     }
 
     /**
-     * Reduce font size to fit to width and height
+     * Change image brightness.
      *
-     * @param  String $text
-     * @param  Array  $options
-     * @return integer
+     * Changes the brightness of the current image by the given level.
+     * Use values between -100 for min. brightness 0 for no change and +100 for max.
+     *
+     * @param integer $level Optional. The level of brightness. Default: 0.
+     *
+     * @return $this
      */
-    protected function fitToBounds($options)
+    public function brightness($level = 0)
     {
-        extract($options);
+        $level = $this->getParam($level, -100, 100);
 
-        if (!is_int($width)) {
-            $options['width'] = $this->width - $x;
+        imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, $level * 2.55);
+
+        return $this;
+    }
+
+    /**
+     * Change the contrast of an image.
+     *
+     * Changes the contrast of the current image by the given level.
+     * Use values between -100 for min contrast 0 for no change and +100 for max.
+     *
+     * @param integer $level Optional. The level of contrast. Default: 0.
+     *
+     * @return $this
+     */
+    public function contrast($level = 0)
+    {
+        $level = $this->getParam($level, -100, 100);
+
+        imagefilter($this->resource, IMG_FILTER_CONTRAST, $level);
+
+        return $this;
+    }
+
+    /**
+     * Turn an image into a grayscale version.
+     *
+     * @return $this
+     */
+    public function grayscale()
+    {
+        imagefilter($this->resource, IMG_FILTER_GRAYSCALE);
+
+        return $this;
+    }
+
+    /**
+     * Apply a gaussian blur filter with a optional amount on the current image.
+     * Note: Performance intensive on larger amounts of blur with GD driver.
+     *
+     * @param integer $amount Optional. The amount of the blur strength (0-100). Default: 1
+     *
+     * @return $this
+     */
+    public function blur($amount = 1)
+    {
+        $amount = $this->getParam($amount, 0, 100);
+
+        for ($i = 0; $i < intval($amount); $i++) {
+            imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
         }
 
-        if (!is_int($height)) {
-            $options['height'] = $this->height - $y;
+        return $this;
+    }
+
+    /**
+     * Invert colors of an image.
+     *
+     * Reverses all colors of the current image.
+     *
+     * @return $this
+     */
+    public function invert()
+    {
+        imagefilter($this->resource, IMG_FILTER_NEGATE);
+
+        return $this;
+    }
+
+    /**
+     * Paste over another image.
+     *
+     * Paste a given image source over the current image with an optional position and dimensions.
+     *
+     * @param String $file    Absolute path to image file.
+     * @param array  $options Optional. List of image options.
+     *
+     * @return $this
+     */
+    public function insert($file, $options = array())
+    {
+        $defaults = array(
+            'x'      => '50%',
+            'y'      => '50%',
+            'width'  => null,
+            'height' => null,
+        );
+
+        $options = array_merge($defaults, $options);
+
+        if (!is_readable($file)) {
+            return $this->handleError($file . ' is not a valid image');
         }
 
+        list($width, $height, $type) = getimagesize($file);
+
+        $ratio = $width / $height;
+
+        if (is_null($options['width'])) {
+            $options['width'] = $width;
+
+            // Try to calc new width by ratio.
+            if (!is_null($options['height'])) {
+                $options['width'] = $options['height'] * $ratio;
+            }
+        }
+
+        if (is_null($options['height'])) {
+            $options['height'] = $height;
+
+            // Try to calc new height by ratio.
+            if (!is_null($options['width'])) {
+                $options['height'] = $options['width'] / $ratio;
+            }
+        }
+
+        if (substr($options['x'], -1) === '%') {
+            $options['x'] = ceil(($this->width - $options['width']) * (trim($options['x'], '%') / 100));
+        }
+
+        if (substr($options['y'], -1) === '%') {
+            $options['y'] = ceil(($this->height - $options['height']) * (trim($options['y'], '%') / 100));
+        }
+
+        $temp = $this->createResource($file, $type);
+
+        imagecopyresampled($this->resource, $temp, $options['x'], $options['y'], 0, 0, $options['width'], $options['height'], $width, $height);
+        imagedestroy($temp);
+
+        return $this;
+    }
+
+    /**
+     * Draw text on image.
+     *
+     * @param string $text     Text strings. Multiline availible.
+     * @param array  $options  Optional. List of text settings.
+     * @param array  $boundary Optional. Actual dimensions of the drawn text box.
+     *
+     * @return $this
+     */
+    public function text($text, $options = array(), &$boundary = array())
+    {
+        $defaults = array(
+            'x'          => 0,
+            'y'          => 0,
+            'width'      => null,
+            'height'     => null,
+            'fontsize'   => 48,
+            'color'      => array(0, 0, 0),
+            'lineheight' => '1.5',
+            'opacity'    => 1,
+            'horizontal' => 'left',
+            'vertical'   => 'top',
+            'fontfile'   => null,
+            'debug'      => false,
+        );
+
+        $options = array_merge($defaults, $options);
+
+        if ($options['debug']) {
+            $this->drawDebug($options);
+        }
+
+        $color = $this->getColor($options);
+
+        // Get wrapped text and updated font-size.
+        $text = $this->wrapText($text, $options);
+
+        // Get text lines as array.
+        $lines = explode("\n", $text);
+
+        // Set default boundary vaules.
+        $boundary = array_merge(array('width' => 0, 'height' => 0));
+
+        foreach ($lines as $index => $line) {
+            list($x, $y, $width, $height) = $this->getOffset($options, $lines, $index);
+
+            // Draw text line.
+            imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontfile'], $line);
+
+            $boundary = array(
+                'width'  => max($width, $boundary['width']),
+                'height' => $boundary['height'] + $height,
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Wrap text to box and update font-size if necessary.
+     *
+     * @param string $text    Text to draw.
+     * @param array  $options Optional. List of image options.
+     *
+     * @return string
+     */
+    protected function wrapText($text, &$options)
+    {
         do {
-            $wrapped = $this->wrap($options);
-            $testbox = imageftbbox($fontSize, $angle, $fontFile, $wrapped);
-            $textHeight = abs($testbox[1] - $testbox[7]);
+            $wrapped = $this->addBreaklines($text, $options);
 
-            if ($textHeight <= $options['height']) {
+            // Get lines from wrapped text.
+            $lines = explode("\n", $wrapped);
+
+            // Sum of all lines heights.
+            $height = $options['fontsize'] * $options['lineheight'] * count($lines);
+
+            if ($height <= $options['height']) {
                 break;
             }
 
-            $options['fontSize'] = --$fontSize;
-        } while ($fontSize > 0);
+            $options['fontsize'] = $options['fontsize'] - 1;
+        } while ($options['fontsize'] > 0);
 
-        $options['text'] = $wrapped;
-
-        return $options;
+        return $wrapped;
     }
 
     /**
-     * Get font height
+     * Add break line to text according font settings.
      *
-     * @param  integer     $fontSize
-     * @param  integer     $angle
-     * @param  String      $fontFile
-     * @param  array lines
-     * @return integer
-     */
-    protected function getFontHeight($fontSize, $angle, $fontFile, $lines)
-    {
-        $height = 0;
-
-        foreach ($lines as $index => $line) {
-            $testbox = imageftbbox($fontSize, $angle, $fontFile, $line);
-            $textHeight = abs($testbox[1] - $testbox[7]);
-
-            if ($textHeight > $height) {
-                $height = $textHeight;
-            }
-        }
-
-        return $height;
-    }
-
-    /**
-     * Helper to wrap text
+     * @param string $text    Text to draw.
+     * @param array  $options Optional. List of image options.
+     * @param string $output  Optional. Non-breaklined output.
      *
-     * @param  String  $text
-     * @param  integer $width
-     * @param  integer $fontSize
-     * @param  integer $angle
-     * @param  String  $fontFile
-     * @return String
+     * @return string
      */
-    protected function wrap($options, $output = '')
+    protected function addBreaklines($text, $options, $output = '')
     {
-        extract($options);
-
         $words = explode(' ', $text);
 
         foreach ($words as $word) {
-            $testbox = imageftbbox($fontSize, $angle, $fontFile, $output . ' ' . $word);
+            $sentence = $output . ' ' . $word;
 
-            // Declare empty seprator
-            $separator = '';
-
-            if (strlen($output) > 0) {
-                $separator = ' ';
+            if (strlen($output) === 0) {
+                $sentence = $word;
             }
 
-            if ($testbox[2] > $width) {
-                $separator = "\n";
+            $box = imageftbbox($options['fontsize'], 0, $options['fontfile'], $sentence);
+
+            if ($box[2] > $options['width']) {
+                $output = $output . PHP_EOL . $word;
+
+                continue;
             }
 
-            $output = $output . $separator . $word;
+            $output = $sentence;
         }
 
         return $output;
     }
 
     /**
-     * Set's global folder mode if folder structure needs to be created
+     * Get color from options array using opacity.
      *
-     * @param  integer $mode
-     * @return $this
-     */
-    public function setFolderMode($mode = 0755)
-    {
-        $this->folderMode = $mode;
-
-        return $this;
-    }
-
-    /**
-     * Set's global text size
+     * @param array $options List of image options.
      *
-     * @param  integer $size
-     * @return $this
+     * @return integer
      */
-    public function setFontSize($size = 12)
+    protected function getColor($options)
     {
-        $this->fontSize = $size;
+        $rgb = $options['color'];
 
-        return $this;
-    }
-
-    /**
-     * Set's global line height
-     *
-     * @param  float $lineHeight
-     * @return $this
-     */
-    public function setLineHeight($lineHeight = 1.25)
-    {
-        $this->lineHeight = $lineHeight;
-
-        return $this;
-    }
-
-    /**
-     * Set's global text vertical alignment
-     *
-     * @param  String $align
-     * @return $this
-     */
-    public function setAlignVertical($align = 'top')
-    {
-        $this->alignVertical = $align;
-
-        return $this;
-    }
-
-    /**
-     * Set's global text horizontal alignment
-     *
-     * @param  String $align
-     * @return $this
-     */
-    public function setAlignHorizontal($align = 'left')
-    {
-        $this->alignHorizontal = $align;
-
-        return $this;
-    }
-
-    /**
-     * Set's global text color using RGB
-     *
-     * @param  array $color
-     * @return $this
-     */
-    public function setTextColor($color = [255, 255, 255])
-    {
-        $this->textColor = $color;
-
-        return $this;
-    }
-
-    /**
-     * Set's global text angle
-     *
-     * @param  integer $angle
-     * @return $this
-     */
-    public function setTextAngle($angle = 0)
-    {
-        $this->textAngle = $angle;
-
-        return $this;
-    }
-
-    /**
-     * Set's global text opacity
-     *
-     * @param  float $opacity
-     * @return $this
-     */
-    public function setTextOpacity($opacity = 1.0)
-    {
-        $this->textOpacity = $opacity;
-
-        return $this;
-    }
-
-    /**
-     * Set's global font file for text from .ttf font file (TrueType)
-     *
-     * @param  string $fontFile
-     * @return $this
-     */
-    public function setFont($fontFile)
-    {
-        $this->fontFile = $fontFile;
-
-        return $this;
-    }
-
-    /**
-     * Set's global quality for PNG output
-     *
-     * @param  string $quality
-     * @return $this
-     */
-    public function setQuality($quality)
-    {
-        $this->quality = $quality;
-
-        return $this;
-    }
-
-    /**
-     * Set's global output type
-     *
-     * @param  String $type
-     * @param  String $quality
-     * @return $this
-     */
-    public function setOutput($type, $quality = null)
-    {
-        switch (strtolower($type)) {
-        case 'gif':
-            $this->type = IMAGETYPE_GIF;
-            break;
-        case 'jpg':
-            $this->type = IMAGETYPE_JPEG;
-            break;
-        case 'png':
-            $this->type = IMAGETYPE_PNG;
-            break;
+        if (is_string($rgb)) {
+            $rgb = sscanf(ltrim($rgb, '#'), "%02x%02x%02x");
         }
 
-        if ($quality !== null) {
-            $this->setQuality($quality);
+        $opacity = $options['opacity'] / 100 * 127;
+
+        // Create image color width opacity.
+        return imagecolorallocatealpha($this->resource, $rgb[0], $rgb[1], $rgb[2], $opacity);
+    }
+
+    /**
+     * Get param using min max values.
+     *
+     * @param integer $value Initial value.
+     * @param integer $min   Minimulm value.
+     * @param integer $max   Maximum value.
+     *
+     * @return integer
+     */
+    protected function getParam($value, $min, $max)
+    {
+        $value = (int) $value;
+
+        return max(min($value, $max), $min);
+    }
+
+    /**
+     * Get offset for text to draw.
+     *
+     * @param integer $options List of image options.
+     * @param array   $lines   List of text lines.
+     * @param integer $index   Current line index in the loop.
+     *
+     * @return array
+     */
+    protected function getOffset($options, $lines, $index)
+    {
+        $box = imageftbbox($options['fontsize'], 0, $options['fontfile'], $lines[$index]);
+
+        $width  = abs($box[6] - $box[4]);
+        $height = $options['fontsize'] * $options['lineheight'];
+
+        $x = $options['x'];
+        $y = $options['y'] + ($index + 1) * $height;
+
+        if ($index === 0) {
+            $y = $options['y'] + $options['fontsize'] + (($height - $options['fontsize']) / 2);
         }
 
-        return $this;
+        switch ($options['horizontal']) {
+            case 'center':
+                $x = $x + (($options['width'] - $width) / 2);
+                break;
+
+            case 'right':
+                $x = $x + ($options['width'] - $width);
+                break;
+        }
+
+        switch ($options['vertical']) {
+            case 'center':
+                $y = $y + (($options['height'] - ($height * count($lines))) / 2);
+                break;
+
+            case 'bottom':
+                $y = $y + ($options['height'] - ($height * count($lines)));
+                break;
+        }
+
+        return array($x, $y, $width, $height);
+    }
+
+    /**
+     * Draw debug box for text by options.
+     *
+     * @param array $options List of text options.
+     *
+     * @return void
+     */
+    protected function drawDebug($options)
+    {
+        $styles = array(
+            'color'   => array(rand(150, 255), rand(150, 255), rand(150, 255)),
+            'opacity' => 50,
+        );
+
+        $this->rectangle($options['x'], $options['y'], $options['width'], $options['height'], $styles);
+    }
+
+    /**
+     * Set output image type using file format.
+     *
+     * @param string $format File format extension. Can be jpg, gif or png.
+     *
+     * @return void
+     */
+    protected function setType($format)
+    {
+        $format = strtolower($format);
+
+        switch ($format) {
+            case 'gif':
+                $this->type = IMAGETYPE_GIF;
+                break;
+
+            case 'jpg':
+                $this->type = IMAGETYPE_JPEG;
+                break;
+
+            case 'png':
+                $this->type = IMAGETYPE_PNG;
+                break;
+
+            case 'webp':
+                $this->type = IMAGETYPE_WEBP;
+                break;
+        }
+    }
+
+    /**
+     * Handle errors
+     *
+     * @param string $error Error message.
+     *
+     * @return Exception
+     */
+    protected function handleError($error)
+    {
+        throw new Exception($error);
     }
 }
