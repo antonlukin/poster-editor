@@ -16,7 +16,7 @@ try {
     $image = new ImageText\ImageText();
 
     // Create from image and resize it down.
-    $image->make('images/bridge.jpg')->resize(1000, 630);
+    $image->make('images/bridge.jpg')->resize(300, 500, false);
 
     // Show it.
     $image->show();

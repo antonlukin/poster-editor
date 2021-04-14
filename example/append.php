@@ -1,6 +1,6 @@
 <?php
 /**
- * Filters image example.
+ * Append image example.
  * php version 7.1
  *
  * @category PHP
@@ -14,15 +14,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new ImageText\ImageText();
+    $image->make('images/bridge.jpg')->fit(600, 300, 'top');
 
-    // Create from image.
-    $image->make('images/bridge.jpg');
+    $logo = new ImageText\ImageText();
+    $logo->make('images/logo.png')->resize(300, 50)->grayscale();
 
-    // Set filters.
-    $image->blur(2)->contrast(25)->brightness(-10);
-
-    // Show it.
-    $image->show();
+    $image->append($logo)->show();
 
 } catch(Exception $e) {
     echo $e->getMessage();

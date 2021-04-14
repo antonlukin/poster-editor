@@ -1,6 +1,6 @@
 <?php
 /**
- * Filters image example.
+ * Canvas image example.
  * php version 7.1
  *
  * @category PHP
@@ -15,13 +15,17 @@ require_once __DIR__ . '/../vendor/autoload.php';
 try {
     $image = new ImageText\ImageText();
 
-    // Create from image.
-    $image->make('images/bridge.jpg');
+    // Create canvas.
+    $image->canvas(500, 500);
 
-    // Set filters.
-    $image->blur(2)->contrast(25)->brightness(-10);
+    // Set canvas color
+    $image->rectangle(
+        0, 0, 500, 500,
+        array(
+            'color' => '#cccc00'
+        )
+    );
 
-    // Show it.
     $image->show();
 
 } catch(Exception $e) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Resize image example.
+ * Insert image example.
  * php version 7.1
  *
  * @category PHP
@@ -16,7 +16,7 @@ try {
     $image = new ImageText\ImageText();
 
     // Create from image and crop 600x600 area.
-    $image->make('images/bridge.jpg')->crop(600, 600, 100, 100);
+    $image->make('images/bridge.jpg')->fit(600, 600, 'bottom-right');
 
     // Grayscale and invert.
     $image->grayscale()->invert();

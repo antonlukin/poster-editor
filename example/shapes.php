@@ -1,6 +1,6 @@
 <?php
 /**
- * Resize image example.
+ * Shapes image example.
  * php version 7.1
  *
  * @category PHP

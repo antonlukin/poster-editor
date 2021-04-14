@@ -103,7 +103,7 @@ class ImageText
      */
     public function createResource($file, $type = null)
     {
-        if (is_null($type)) {
+        if (null === $type) {
             list($width, $height, $type) = getimagesize($file);
         }
 
@@ -124,7 +124,7 @@ class ImageText
                 $image = imagecreatefromwebp($file);
 
             default:
-                $this->handleError('Unsupported image type');
+                return $this->handleError('Unsupported image type');
         }
 
         return $image;
@@ -165,7 +165,7 @@ class ImageText
      */
     public function canvas($width, $height = null)
     {
-        if ($height === null) {
+        if (null === $height) {
             $height = $width;
         }
 
@@ -206,7 +206,7 @@ class ImageText
      */
     public function show($quality = 90, $format = null)
     {
-        if (!is_null($format)) {
+        if (null === $format) {
             $this->setType($format);
         }
 
@@ -251,14 +251,14 @@ class ImageText
         $folder = dirname($path);
 
         if (!is_writable($folder)) {
-            $this->handleError($folder . ' is not writable');
+            return $this->handleError($folder . ' is not writable');
         }
 
-        if (is_null($format)) {
+        if (null === $format) {
             $format = pathinfo($path, PATHINFO_EXTENSION);
         }
 
-        if (strlen($format) > 0) {
+        if (!empty($format)) {
             $this->setType($format);
         }
 
@@ -320,42 +320,48 @@ class ImageText
      * Resizes current image based on given width and height.
      * Scale param set constraint the current aspect-ratio of the image.
      *
-     * @param integer $width  Target image width.
-     * @param integer $height Target image height.
-     * @param boolean $scale  Optional. Constraint the current aspect-ratio of the image.
-     * @param boolean $upsize Optional. Keep image from being upsized. Aplies on scale true.
+     * @param integer|null $width  Target image width.
+     * @param integer|null $height Target image height.
+     * @param boolean      $scale  Optional. Constraint the current aspect-ratio of the image.
+     * @param boolean      $upsize Optional. Keep image from being upsized. Aplies on scale true.
      *
      * @return $this
      */
     public function resize($width, $height, $scale = true, $upsize = true)
     {
-        $info = array(
+        $ratio = $this->width / $this->height;
+
+        if (null === $width) {
+            $width = $this->width;
+
+            // Try to calc new width by ratio.
+            if (null !== $height) {
+                $width = $height * $ratio;
+            }
+        }
+
+        if (null === $height) {
+            $height = $this->height;
+
+            // Try to calc new height by ratio.
+            if (null !== $width) {
+                $height = $width / $ratio;
+            }
+        }
+
+        if (true === $scale) {
+            list($width, $height) = $this->calcResizes($width, $height, $ratio, $upsize);
+        }
+
+        $image = array(
             'width'  => $this->width,
             'height' => $this->height,
         );
 
-        if ($scale) {
-            $ratio = $info['width'] / $info['height'];
-
-            if ($upsize) {
-                if ($width / $height > $ratio) {
-                    $width = intval($height * $ratio);
-                } else {
-                    $height = intval($width / $ratio);
-                }
-            } else {
-                if ($width / $height > $ratio) {
-                    $height = intval($width / $ratio);
-                } else {
-                    $width = intval($height * $ratio);
-                }
-            }
-        }
-
         $temp = $this->resource;
         $this->canvas($width, $height);
 
-        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $info['width'], $info['height']);
+        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $image['width'], $image['height']);
         imagedestroy($temp);
 
         return $this;
@@ -367,34 +373,33 @@ class ImageText
      * Cut out a rectangular part of the current image with given width and height.
      * Define optional x,y coordinates to move the top-left corner of the cutout to a certain position.
      *
-     * @param integer      $width  Width of the rectangular cutout.
-     * @param integer      $height Height of the rectangular cutout.
-     * @param integer|null $x      Optional. X coordinate from left. By default will be centered on the current image.
-     * @param integer|null $y      Optional. Y coordinate from top. By default will be centered on the current image.
+     * @param integer $width   Width of the rectangular cutout.
+     * @param integer $height  Height of the rectangular cutout.
+     * @param array   $options Optional. List of image options.
      *
      * @return $this
      */
-    public function crop($width, $height, $x = null, $y = null)
+    public function crop($width, $height, $options = array())
     {
-        $info = array(
-            'width'  => $this->width,
-            'height' => $this->height,
+        $defaults = array(
+            'x' => '50%',
+            'y' => '50%',
         );
 
-        $ratio = $info['width'] / $info['height'];
+        $options = array_merge($defaults, $options);
 
-        if (is_null($x)) {
-            $x = intval(($info['width'] - $width) / 2);
+        if (substr($options['x'], -1) === '%') {
+            $options['x'] = $this->calcPercents($this->width, $width, $options['x']);
         }
 
-        if (is_null($y)) {
-            $y = intval(($info['height'] - $height) / 2);
+        if (substr($options['y'], -1) === '%') {
+            $options['y'] = $this->calcPercents($this->height, $height, $options['y']);
         }
 
         $temp = $this->resource;
         $this->canvas($width, $height);
 
-        imagecopyresampled($this->resource, $temp, 0, 0, $x, $y, $width, $height, $width, $height);
+        imagecopyresampled($this->resource, $temp, 0, 0, $options['x'], $options['y'], $width, $height, $width, $height);
         imagedestroy($temp);
 
         return $this;
@@ -418,54 +423,52 @@ class ImageText
         // Resize without upsizing.
         $this->resize($width, $height, true, false);
 
-        $info = array(
-            'width'  => $this->width,
-            'height' => $this->height,
-        );
-
-        $x = 0;
-        $y = 0;
-
         switch ($position) {
             case 'top-left':
+                $x = 0;
+                $y = 0;
                 break;
 
             case 'top':
-                $x = intval(($info['width'] - $width) / 2);
+                $x = intval(($this->width - $width) / 2);
+                $y = 0;
                 break;
 
             case 'top-right':
-                $x = intval($info['width'] - $width);
+                $x = intval($this->width - $width);
+                $y = 0;
                 break;
 
             case 'bottom-left':
-                $y = intval($info['height'] - $height);
+                $x = 0;
+                $y = intval($this->height - $height);
                 break;
 
             case 'bottom':
-                $x = intval(($info['width'] - $width) / 2);
-                $y = intval($info['height'] - $height);
+                $x = intval(($this->width - $width) / 2);
+                $y = intval($this->height - $height);
                 break;
 
             case 'bottom-right':
-                $x = intval($info['width'] - $width);
-                $y = intval($info['height'] - $height);
+                $x = intval($this->width - $width);
+                $y = intval($this->height - $height);
                 break;
 
             case 'right':
-                $x = intval($info['width'] - $width);
-                $y = intval(($info['height'] - $height) / 2);
+                $x = intval($this->width - $width);
+                $y = intval(($this->height - $height) / 2);
                 break;
 
             case 'left':
-                $y = intval(($info['height'] - $height) / 2);
+                $x = 0;
+                $y = intval(($this->height - $height) / 2);
                 break;
             default:
-                $x = intval(($info['width'] - $width) / 2);
-                $y = intval(($info['height'] - $height) / 2);
+                $x = intval(($this->width - $width) / 2);
+                $y = intval(($this->height - $height) / 2);
         }
 
-        $this->crop($width, $height, $x, $y);
+        $this->crop($width, $height, compact('x', 'y'));
 
         return $this;
     }
@@ -531,7 +534,7 @@ class ImageText
 
         imagesetthickness($this->resource, $options['width']);
 
-        if ($options['outline']) {
+        if (true === $options['outline']) {
             imagerectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
         } else {
             imagefilledrectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
@@ -566,7 +569,7 @@ class ImageText
         // Get color from options.
         $color = $this->getColor($options);
 
-        if ($options['outline']) {
+        if (true === $options['outline']) {
             imageellipse($this->resource, $x, $y, $width, $height, $color);
         } else {
             imagefilledellipse($this->resource, $x, $y, $width, $height, $color);
@@ -659,11 +662,49 @@ class ImageText
     }
 
     /**
+     * Append another image instance.
+     *
+     * @param string $image   Absolute path to image file.
+     * @param array  $options Optional. List of image options.
+     *
+     * @return $this
+     */
+    public function append($image, $options = array())
+    {
+        $defaults = array(
+            'x' => '50%',
+            'y' => '50%',
+        );
+
+        $options = array_merge($defaults, $options);
+
+        if (!($image instanceof ImageText)) {
+            return $this->handleError('Image is not valid instance of this class.');
+        }
+
+        $width  = $image->width;
+        $height = $image->height;
+
+        if (substr($options['x'], -1) === '%') {
+            $options['x'] = $this->calcPercents($this->width, $width, $options['x']);
+        }
+
+        if (substr($options['y'], -1) === '%') {
+            $options['y'] = $this->calcPercents($this->height, $height, $options['y']);
+        }
+
+        imagecopyresampled($this->resource, $image->resource, $options['x'], $options['y'], 0, 0, $width, $height, $width, $height);
+        imagedestroy($image->resource);
+
+        return $this;
+    }
+
+    /**
      * Paste over another image.
      *
      * Paste a given image source over the current image with an optional position and dimensions.
      *
-     * @param String $file    Absolute path to image file.
+     * @param string $file    Absolute path to image file.
      * @param array  $options Optional. List of image options.
      *
      * @return $this
@@ -680,27 +721,27 @@ class ImageText
         $options = array_merge($defaults, $options);
 
         if (!is_readable($file)) {
-            return $this->handleError($file . ' is not a valid image');
+            $this->handleError($file . ' is not a valid image');
         }
 
         list($width, $height, $type) = getimagesize($file);
 
         $ratio = $width / $height;
 
-        if (is_null($options['width'])) {
+        if (null === $options['width']) {
             $options['width'] = $width;
 
             // Try to calc new width by ratio.
-            if (!is_null($options['height'])) {
+            if (null !== $options['height']) {
                 $options['width'] = $options['height'] * $ratio;
             }
         }
 
-        if (is_null($options['height'])) {
+        if (null === $options['height']) {
             $options['height'] = $height;
 
             // Try to calc new height by ratio.
-            if (!is_null($options['width'])) {
+            if (null !== $options['width']) {
                 $options['height'] = $options['width'] / $ratio;
             }
         }
@@ -739,7 +780,7 @@ class ImageText
             'height'     => null,
             'fontsize'   => 48,
             'color'      => array(0, 0, 0),
-            'lineheight' => '1.5',
+            'lineheight' => 1.5,
             'opacity'    => 1,
             'horizontal' => 'left',
             'vertical'   => 'top',
@@ -749,7 +790,18 @@ class ImageText
 
         $options = array_merge($defaults, $options);
 
-        if ($options['debug']) {
+        // Set default width if undefined
+        if (null === $options['width']) {
+            $options['width'] = $this->width - $options['x'];
+        }
+
+        // Set default height if undefined
+        if (null === $options['height']) {
+            $options['height'] = $this->width - $options['y'];
+        }
+
+        // Draw debug rectangle.
+        if (true === $options['debug']) {
             $this->drawDebug($options);
         }
 
@@ -824,7 +876,7 @@ class ImageText
         foreach ($words as $word) {
             $sentence = $output . ' ' . $word;
 
-            if (strlen($output) === 0) {
+            if (empty($output)) {
                 $sentence = $word;
             }
 
@@ -854,7 +906,12 @@ class ImageText
         $rgb = $options['color'];
 
         if (is_string($rgb)) {
-            $rgb = sscanf(ltrim($rgb, '#'), "%02x%02x%02x");
+            $rgb = array_map(
+                function ($c) {
+                    return hexdec(str_pad($c, 2, $c));
+                },
+                str_split(ltrim($rgb, '#'), strlen($rgb) > 4 ? 2 : 1)
+            );
         }
 
         $opacity = $options['opacity'] / 100 * 127;
@@ -895,11 +952,14 @@ class ImageText
         $width  = abs($box[6] - $box[4]);
         $height = $options['fontsize'] * $options['lineheight'];
 
-        $x = $options['x'];
-        $y = $options['y'] + ($index + 1) * $height;
+        // Smart offset for the first line respecting line height.
+        $offset = $options['fontsize'] + (($height - $options['fontsize']) / 2);
 
-        if ($index === 0) {
-            $y = $options['y'] + $options['fontsize'] + (($height - $options['fontsize']) / 2);
+        $x = $options['x'];
+        $y = $options['y'] + $offset + $index * $height;
+
+        if (0 === $index) {
+            $y = $options['y'] + $offset;
         }
 
         switch ($options['horizontal']) {
@@ -970,6 +1030,49 @@ class ImageText
                 $this->type = IMAGETYPE_WEBP;
                 break;
         }
+    }
+
+    /**
+     * Calculate pixles from percents.
+     *
+     * @param integer $from  Source image size.
+     * @param integer $to    Destination image size.
+     * @param string  $value Value to parse.
+     *
+     * @return integer
+     */
+    protected function calcPercents($from, $to, $value)
+    {
+        return ceil(($from - $to) * (trim($value, '%') / 100));
+    }
+
+    /**
+     * Calculate new width and height values for resize.
+     *
+     * @param integer $width  Current image width.
+     * @param integer $height Current image height.
+     * @param float   $ratio  Width to height relation.
+     * @param boolean $upsize Keep image from being upsized.
+     *
+     * @return array
+     */
+    protected function calcResizes($width, $height, $ratio, $upsize)
+    {
+        if (true === $upsize) {
+            if ($width / $height > $ratio) {
+                $width = intval($height * $ratio);
+            } else {
+                $height = intval($width / $ratio);
+            }
+        } else {
+            if ($width / $height > $ratio) {
+                $height = intval($width / $ratio);
+            } else {
+                $width = intval($height * $ratio);
+            }
+        }
+
+        return array($width, $height);
     }
 
     /**

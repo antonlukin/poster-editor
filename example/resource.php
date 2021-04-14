@@ -1,6 +1,6 @@
 <?php
 /**
- * Filters image example.
+ * Resource example.
  * php version 7.1
  *
  * @category PHP
@@ -15,11 +15,17 @@ require_once __DIR__ . '/../vendor/autoload.php';
 try {
     $image = new ImageText\ImageText();
 
-    // Create from image.
-    $image->make('images/bridge.jpg');
+    // Create from image and fit 600x600 area.
+    $image->make('images/bridge.jpg')->fit(600, 600);
 
-    // Set filters.
-    $image->blur(2)->contrast(25)->brightness(-10);
+    // Get resource
+    $resource = $image->getResource();
+
+    // Use some raw GD functions
+    imagefilter($resource, IMG_FILTER_COLORIZE, 0, 200, 0);
+
+    // Set updated resource
+    $image->setResource($resource);
 
     // Show it.
     $image->show();
