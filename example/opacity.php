@@ -4,16 +4,16 @@
  * php version 7.1
  *
  * @category PHP
- * @package  ImageText
+ * @package  PosterImage
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @link     https://github.com/antonlukin/image-text
+ * @link     https://github.com/antonlukin/poster-image
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $image = new ImageText\ImageText();
+    $image = new PosterImage\PosterImage();
 
     // Create from image and fit to 1200x630 area.
     $image->make('images/bridge.jpg')->fit(1200, 630);

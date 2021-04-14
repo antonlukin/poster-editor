@@ -1,5 +1,5 @@
 {
-    "name": "antonlukin/image-text",
+    "name": "antonlukin/poster-image",
 	"version": "2.0",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "files": [
-            "src/ImageText.php"
+            "src/PosterImage.php"
         ]
     }
 }

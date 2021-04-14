@@ -6,13 +6,13 @@
  * php version 7.1
  *
  * @category PHP
- * @package  ImageText
+ * @package  PosterImage
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @link     https://github.com/antonlukin/image-text
+ * @link     https://github.com/antonlukin/poster-image
  */
 
-namespace ImageText;
+namespace PosterImage;
 
 use Exception;
 
@@ -20,13 +20,13 @@ use Exception;
   * Draw images, text and shapes using php-gd.
   *
   * @category PHP
-  * @package  ImageText
+  * @package  PosterImage
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
   * @version  Release: 1.0.0
-  * @link     https://github.com/antonlukin/image-text
+  * @link     https://github.com/antonlukin/poster-image
   */
-class ImageText
+class PosterImage
 {
     /**
      * Canvas resource
@@ -678,7 +678,7 @@ class ImageText
 
         $options = array_merge($defaults, $options);
 
-        if (!($image instanceof ImageText)) {
+        if (!($image instanceof PosterImage)) {
             return $this->handleError('Image is not valid instance of this class.');
         }
 
