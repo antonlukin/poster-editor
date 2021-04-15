@@ -3,7 +3,7 @@
 	"version": "2.0",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
-	"homepage": "https://lukin.me",
+	"homepage": "https://github.com/antonlukin/poster-image",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
@@ -18,6 +18,9 @@
 	"require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
 		"phpcompatibility/php-compatibility": "^9.3"
+    },
+	"suggest": {
+        "ext-gd": "to use GD library based image processing."
     },
     "autoload": {
         "files": [

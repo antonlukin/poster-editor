@@ -21,7 +21,7 @@ However, you can require the class directly without using a loader - this will n
 In case of an error, the class methods return an exception. Therefore, it is best to call them inside a block try..catch.
 
 **Example**
-```
+```php
 // Using composer
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -38,3 +38,5 @@ try {
 }
 ```
 
+## Contribution
+All project code is stored on Github. The best way to help the project is to report a bug or add some new functionality. You can also open here an issue or send a pull reguest.
