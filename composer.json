@@ -1,6 +1,6 @@
 {
-    "name": "antonlukin/poster-image",
-	"version": "2.0",
+	"name": "antonlukin/poster-image",
+	"version": "2.1",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
 	"homepage": "https://github.com/antonlukin/poster-image",
@@ -12,19 +12,19 @@
 			"email": "anton@lukin.me"
 		}
 	],
-    "require": {
-        "php": ">=7.1.0"
-    },
+	"require": {
+		"php": ">=7.1.0"
+	},
 	"require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
 		"phpcompatibility/php-compatibility": "^9.3"
-    },
+	},
 	"suggest": {
-        "ext-gd": "to use GD library based image processing."
-    },
-    "autoload": {
-        "files": [
-            "src/PosterImage.php"
-        ]
-    }
+		"ext-gd": "to use GD library based image processing."
+	},
+	"autoload": {
+		"files": [
+			"src/PosterImage.php"
+		]
+	}
 }

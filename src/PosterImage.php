@@ -629,20 +629,29 @@ class PosterImage
     }
 
     /**
-     * Apply a gaussian blur filter with a optional amount on the current image.
-     * Note: Performance intensive on larger amounts of blur with GD driver.
+     * Apply a blur image effect.
      *
-     * @param integer $amount Optional. The amount of the blur strength (0-100). Default: 1
+     * Original version from Martijn Frazer based on
+     * https://stackoverflow.com/a/20264482
      *
      * @return $this
      */
-    public function blur($amount = 1)
+    public function blur()
     {
-        $amount = $this->getParam($amount, 0, 100);
+        $width  = $this->width;
+        $height = $this->height;
 
-        for ($i = 0; $i < intval($amount); $i++) {
-            imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
-        }
+        // Scale by 25% and apply Gaussian blur.
+        $this->resize($width / 4, $height / 4);
+        imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
+
+        // Scale result by 200% and blur again.
+        $this->resize($width / 2, $height / 2);
+        imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
+
+        // Scale result back to original size and blur one more time.
+        $this->resize($width, $height);
+        imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
 
         return $this;
     }
