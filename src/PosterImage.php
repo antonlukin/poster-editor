@@ -671,6 +671,30 @@ class PosterImage
     }
 
     /**
+     * Add blackout filter.
+     *
+     * Draw black opactity rectangle on image.
+     *
+     * @param integer $level Optional. Blackout level. Default: 0.
+     *
+     * @return $this
+     */
+    public function blackout($level = 50)
+    {
+        $level = $this->getParam($level, 0, 100);
+
+        $this->rectangle(
+            0, 0, $this->width, $this->height,
+            array(
+                'color'   => '#000',
+                'opacity' => 100 - $level,
+            )
+        );
+
+        return $this;
+    }
+
+    /**
      * Append another image instance.
      *
      * @param string $image   Absolute path to image file.

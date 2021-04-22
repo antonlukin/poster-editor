@@ -18,14 +18,8 @@ try {
     // Create from image and fit to 1200x630 area.
     $image->make('images/bridge.jpg')->fit(1200, 630);
 
-    // Create opacity layer
-    $image->rectangle(
-        0, 0, 1200, 630,
-        array(
-            'color'   => '#000',
-            'opacity' => 60,
-        )
-    );
+    // Add blackout filter
+    $image->blackout(70);
 
     $image->text(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat', // phpcs:ignore

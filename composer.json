@@ -1,6 +1,6 @@
 {
 	"name": "antonlukin/poster-image",
-	"version": "2.1",
+	"version": "2.2",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
 	"homepage": "https://github.com/antonlukin/poster-image",
