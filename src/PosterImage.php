@@ -521,10 +521,10 @@ class PosterImage
     public function rectangle($x, $y, $width, $height, $options = array())
     {
         $defaults = array(
-            'color'   => array(0, 0, 0),
-            'opacity' => 0,
-            'width'   => 1,
-            'outline' => false,
+            'color'     => array(0, 0, 0),
+            'opacity'   => 0,
+            'thickness' => 1,
+            'outline'   => false,
         );
 
         $options = array_merge($defaults, $options);
@@ -532,7 +532,7 @@ class PosterImage
         // Get color from options.
         $color = $this->getColor($options);
 
-        imagesetthickness($this->resource, $options['width']);
+        imagesetthickness($this->resource, $options['thickness']);
 
         if (true === $options['outline']) {
             imagerectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
