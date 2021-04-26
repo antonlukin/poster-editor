@@ -4,16 +4,16 @@
  * php version 7.1
  *
  * @category PHP
- * @package  PosterImage
+ * @package  PosterEditor
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @link     https://github.com/antonlukin/poster-image
+ * @link     https://github.com/antonlukin/poster-editor
  */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $image = new PosterImage\PosterImage();
+    $image = new PosterEditor\PosterEditor();
 
     // Create from image and fit 1200x630 area.
     $image->make('images/bridge.jpg')->fit(1200, 630);

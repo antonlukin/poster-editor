@@ -1,4 +1,4 @@
-# Poster Image
+# Poster Editor
 
 This class is an alternative to the package [Intervention Image](https://github.com/Intervention/image) for more flexible work with text on the image.
 Use it if you need to **fit text** in a given area, automatically **calculate font size** and change **line height**. 
@@ -12,10 +12,10 @@ Note that this class supports PHP-GD driver only.
 You can also easily inherit your class — all methods of the parent can be overridden.
 
 ## Installation
-The best way to install Poster Image is quickly and easily with [Composer](http://getcomposer.org/).  
+The best way to install Poster Editor is quickly and easily with [Composer](http://getcomposer.org/).  
 However, you can require the class directly without using a loader - this will not affect performance in any way.
 
-`php composer.phar require antonlukin/poster-image`
+`php composer.phar require antonlukin/poster-editor`
 
 ## Usage
 In case of an error, the class methods return an exception.  
@@ -27,10 +27,10 @@ Therefore, it is best to call them inside a block `try..catch`.
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Or directly
-// require_once __DIR__ . '/PosterImage.php';
+// require_once __DIR__ . '/PosterEditor.php';
 
 try {
-    $image = new PosterImage\PosterImage();
+    $image = new PosterEditor\PosterEditor();
     $image->make('images/bridge.jpg')->fit(600, 600);
     $image->show();
 
@@ -41,4 +41,4 @@ try {
 
 ## Contribution
 All project code is stored on Github. The best way to help the project is to report a bug or add some new functionality. 
-You can also open here an [issue](https://github.com/antonlukin/poster-image/issues) or send a [pull reguest](https://github.com/antonlukin/poster-image/pulls).
+You can also open here an [issue](https://github.com/antonlukin/poster-editor/issues) or send a [pull reguest](https://github.com/antonlukin/poster-editor/pulls).

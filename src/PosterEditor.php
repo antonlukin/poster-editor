@@ -6,13 +6,13 @@
  * php version 7.1
  *
  * @category PHP
- * @package  PosterImage
+ * @package  PosterEditor
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @link     https://github.com/antonlukin/poster-image
+ * @link     https://github.com/antonlukin/poster-editor
  */
 
-namespace PosterImage;
+namespace PosterEditor;
 
 use Exception;
 
@@ -20,13 +20,13 @@ use Exception;
   * Draw images, text and shapes using php-gd.
   *
   * @category PHP
-  * @package  PosterImage
+  * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
   * @version  Release: 1.0.0
-  * @link     https://github.com/antonlukin/poster-image
+  * @link     https://github.com/antonlukin/poster-editor
   */
-class PosterImage
+class PosterEditor
 {
     /**
      * Canvas resource
@@ -382,18 +382,18 @@ class PosterImage
     public function crop($width, $height, $options = array())
     {
         $defaults = array(
-            'x' => '50%',
-            'y' => '50%',
+            'x' => null,
+            'y' => null,
         );
 
         $options = array_merge($defaults, $options);
 
-        if (substr($options['x'], -1) === '%') {
-            $options['x'] = $this->calcPercents($this->width, $width, $options['x']);
+        if (null === $options['x']) {
+            $options['x'] = $this->findCenter($this->width, $width);
         }
 
-        if (substr($options['y'], -1) === '%') {
-            $options['y'] = $this->calcPercents($this->height, $height, $options['y']);
+        if (null === $options['y']) {
+            $options['y'] = $this->findCenter($this->height, $height);
         }
 
         $temp = $this->resource;
@@ -705,25 +705,25 @@ class PosterImage
     public function append($image, $options = array())
     {
         $defaults = array(
-            'x' => '50%',
-            'y' => '50%',
+            'x' => null,
+            'y' => null,
         );
 
         $options = array_merge($defaults, $options);
 
-        if (!($image instanceof PosterImage)) {
+        if (!($image instanceof PosterEditor)) {
             return $this->handleError('Image is not valid instance of this class.');
         }
 
         $width  = $image->width;
         $height = $image->height;
 
-        if (substr($options['x'], -1) === '%') {
-            $options['x'] = $this->calcPercents($this->width, $width, $options['x']);
+        if (null === $options['x']) {
+            $options['x'] = $this->findCenter($this->width, $width);
         }
 
-        if (substr($options['y'], -1) === '%') {
-            $options['y'] = $this->calcPercents($this->height, $height, $options['y']);
+        if (null === $options['y']) {
+            $options['y'] = $this->findCenter($this->height, $height);
         }
 
         imagecopyresampled($this->resource, $image->resource, $options['x'], $options['y'], 0, 0, $width, $height, $width, $height);
@@ -745,8 +745,8 @@ class PosterImage
     public function insert($file, $options = array())
     {
         $defaults = array(
-            'x'      => '50%',
-            'y'      => '50%',
+            'x'      => null,
+            'y'      => null,
             'width'  => null,
             'height' => null,
         );
@@ -779,12 +779,12 @@ class PosterImage
             }
         }
 
-        if (substr($options['x'], -1) === '%') {
-            $options['x'] = ceil(($this->width - $options['width']) * (trim($options['x'], '%') / 100));
+        if (null === $options['x']) {
+            $options['x'] = $this->findCenter($this->width, $options['width']);
         }
 
-        if (substr($options['y'], -1) === '%') {
-            $options['y'] = ceil(($this->height - $options['height']) * (trim($options['y'], '%') / 100));
+        if (null === $options['y']) {
+            $options['y'] = $this->findCenter($this->height, $options['height']);
         }
 
         $temp = $this->createResource($file, $type);
@@ -1066,17 +1066,16 @@ class PosterImage
     }
 
     /**
-     * Calculate pixles from percents.
+     * Find image center usin from and to values.
      *
-     * @param integer $from  Source image size.
-     * @param integer $to    Destination image size.
-     * @param string  $value Value to parse.
+     * @param integer $from Source size.
+     * @param integer $to   Destination size.
      *
      * @return integer
      */
-    protected function calcPercents($from, $to, $value)
+    protected function findCenter($from, $to)
     {
-        return ceil(($from - $to) * (trim($value, '%') / 100));
+        return ceil(($from - $to) * 0.5);
     }
 
     /**

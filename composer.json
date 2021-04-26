@@ -1,9 +1,9 @@
 {
-	"name": "antonlukin/poster-image",
-	"version": "2.3",
+	"name": "antonlukin/poster-editor",
+	"version": "3.0",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
-	"homepage": "https://github.com/antonlukin/poster-image",
+	"homepage": "https://github.com/antonlukin/poster-editor",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
@@ -24,7 +24,7 @@
 	},
 	"autoload": {
 		"files": [
-			"src/PosterImage.php"
+			"src/PosterEditor.php"
 		]
 	}
 }
