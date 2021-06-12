@@ -1,6 +1,6 @@
 <?php
 /**
- * Text center image example.
+ * Text scaling image example.
  * php version 7.1
  *
  * @category PHP
@@ -24,28 +24,27 @@ try {
     $image->grayscale()->brightness(-40);
 
     $image->text(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Lorem ipsum dolor sit amet', // phpcs:ignore
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.", // phpcs:ignore
         array(
             'x'          => 100,
             'y'          => 100,
-            'width'      => 1000,
-            'height'     => 400,
-            'horizontal' => 'center',
-            'vertical'   => 'center',
-            'fontpath'   => __DIR__ . '/fonts/opensans.ttf',
-            'fontsize'   => 24,
+            'width'      => 900,
+            'height'     => 200,
+            'horizontal' => 'left',
+            'vertical'   => 'top',
+            'fontpath'   => __DIR__ . '/fonts/merriweather.ttf',
+            'fontsize'   => 120,
             'lineheight' => 1.75,
             'color'      => '#ffffff',
             'debug'      => true,
         )
     );
 
-    // Show it.
-    $image->show(90);
+    // Save it.
+    $image->save('/tmp/temp.jpg', 90);
 
 } catch(Exception $e) {
     echo $e->getMessage();
-    exit;
 }
 
-echo '<b>Total Execution Time:</b> ' . (microtime(true) - $time_start);
+echo '<b>Total Execution Time:</b> ' . round((microtime(true) - $time_start), 5);

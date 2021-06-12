@@ -16,11 +16,8 @@ try {
     $image = new PosterEditor\PosterEditor();
 
     // Create canvas.
-    $image->canvas(500, 500);
-
-    // Set canvas color
-    $image->rectangle(
-        0, 0, 500, 500,
+    $image->canvas(
+        500, 500,
         array(
             'color' => '#cccc00'
         )

@@ -140,7 +140,7 @@ class PosterEditor
     public function make($file)
     {
         if (!is_readable($file)) {
-            return $this->handleError($file . ' is not a valid image');
+            return $this->handleError('Image is not a valid file');
         }
 
         // Get image dimensions.
@@ -158,16 +158,20 @@ class PosterEditor
      * Intialise the canvas by width and height.
      * Create square if the height param is empty.
      *
-     * @param integer $width  Canvas width.
-     * @param integer $height Optional. Canvas height.
+     * @param integer $width   Canvas width.
+     * @param integer $height  Canvas height.
+     * @param string  $options Optional. Background color.
      *
      * @return $this
      */
-    public function canvas($width, $height = null)
+    public function canvas($width, $height, $options = array())
     {
-        if (null === $height) {
-            $height = $width;
-        }
+        $defaults = array(
+            'color'   => array(0, 0, 0),
+            'opacity' => 0,
+        );
+
+        $options = array_merge($defaults, $options);
 
         unset($this->resource);
 
@@ -179,7 +183,7 @@ class PosterEditor
         // Turn off transparency blending (temporarily)
         imagealphablending($this->resource, false);
 
-        $color = imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
+        $color = $this->getColor($options);
 
         // Completely fill the background with transparent color
         imagefilledrectangle($this->resource, 0, 0, $width, $height, $color);
@@ -199,16 +203,14 @@ class PosterEditor
      * Sends HTTP response with current image in given format and quality.
      * Quality is not applied for PNG compression.
      *
-     * @param integer $quality Define optionally the quality of the image. From 0 to 100. Default: 90.
-     * @param string  $format  File image extension. By default use type from make or insert function.
+     * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string  $format  Optional. File image extension. By default use type from make or insert function.
      *
      * @return void
      */
     public function show($quality = 90, $format = null)
     {
-        if (null === $format) {
-            $this->setType($format);
-        }
+        $this->setType($format);
 
         $quality = $this->getParam($quality, 0, 100);
 
@@ -241,8 +243,8 @@ class PosterEditor
      * Save the image
      *
      * @param string  $path    Path to the file where to write the image data.
-     * @param integer $quality Define optionally the quality of the image. From 0 to 100. Default: 90.
-     * @param string  $format  File image extension. By default use from path.
+     * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string  $format  Optional. File image extension. By default use from path.
      *
      * @return $this
      */
@@ -251,16 +253,14 @@ class PosterEditor
         $folder = dirname($path);
 
         if (!is_writable($folder)) {
-            return $this->handleError($folder . ' is not writable');
+            return $this->handleError('Folder is not writable');
         }
 
-        if (null === $format) {
+        if (empty($format)) {
             $format = pathinfo($path, PATHINFO_EXTENSION);
         }
 
-        if (!empty($format)) {
-            $this->setType($format);
-        }
+        $this->setType($format);
 
         $quality = $this->getParam($quality, 0, 100);
 
@@ -534,10 +534,10 @@ class PosterEditor
 
         imagesetthickness($this->resource, $options['thickness']);
 
-        if (true === $options['outline']) {
-            imagerectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
-        } else {
+        if (false === $options['outline']) {
             imagefilledrectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
+        } else {
+            imagerectangle($this->resource, $x, $y, $x + $width, $y + $height, $color);
         }
 
         imagesetthickness($this->resource, 1);
@@ -679,7 +679,7 @@ class PosterEditor
      *
      * @return $this
      */
-    public function blackout($level = 50)
+    public function blackout($level = 0)
     {
         $level = $this->getParam($level, 0, 100);
 
@@ -697,7 +697,7 @@ class PosterEditor
     /**
      * Append another image instance.
      *
-     * @param string $image   Absolute path to image file.
+     * @param string $image   PosterEditor image instance.
      * @param array  $options Optional. List of image options.
      *
      * @return $this
@@ -754,7 +754,7 @@ class PosterEditor
         $options = array_merge($defaults, $options);
 
         if (!is_readable($file)) {
-            $this->handleError($file . ' is not a valid image');
+            $this->handleError('Image is not a valid file');
         }
 
         list($width, $height, $type) = getimagesize($file);
@@ -817,11 +817,15 @@ class PosterEditor
             'opacity'    => 1,
             'horizontal' => 'left',
             'vertical'   => 'top',
-            'fontfile'   => null,
+            'fontpath'   => null,
             'debug'      => false,
         );
 
         $options = array_merge($defaults, $options);
+
+        if (!is_readable($options['fontpath'])) {
+            $this->handleError('Font is not a valid file');
+        }
 
         // Set default width if undefined
         if (null === $options['width']) {
@@ -830,7 +834,7 @@ class PosterEditor
 
         // Set default height if undefined
         if (null === $options['height']) {
-            $options['height'] = $this->width - $options['y'];
+            $options['height'] = $this->height - $options['y'];
         }
 
         // Draw debug rectangle.
@@ -853,7 +857,7 @@ class PosterEditor
             list($x, $y, $width, $height) = $this->getOffset($options, $lines, $index);
 
             // Draw text line.
-            imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontfile'], $line);
+            imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $line);
 
             $boundary = array(
                 'width'  => max($width, $boundary['width']),
@@ -907,22 +911,28 @@ class PosterEditor
         $words = explode(' ', $text);
 
         foreach ($words as $word) {
-            $sentence = $output . ' ' . $word;
+            $sentence = $line . ' ' . $word;
 
-            if (empty($output)) {
+            if (empty($line)) {
                 $sentence = $word;
             }
 
-            $box = imageftbbox($options['fontsize'], 0, $options['fontfile'], $sentence);
+            $box = imageftbbox($options['fontsize'], 0, $options['fontpath'], $sentence);
 
+            // Add new line to output.
             if ($box[2] > $options['width']) {
-                $output = $output . PHP_EOL . $word;
+                $output = $output . $line . "\n";
 
+                // Reset line.
+                $line = $word;
                 continue;
             }
 
-            $output = $sentence;
+            $line = $sentence;
         }
+
+        // Add last line to output.
+        $output = $output . $line;
 
         return $output;
     }
@@ -980,7 +990,7 @@ class PosterEditor
      */
     protected function getOffset($options, $lines, $index)
     {
-        $box = imageftbbox($options['fontsize'], 0, $options['fontfile'], $lines[$index]);
+        $box = imageftbbox($options['fontsize'], 0, $options['fontpath'], $lines[$index]);
 
         $width  = abs($box[6] - $box[4]);
         $height = $options['fontsize'] * $options['lineheight'];

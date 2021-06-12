@@ -28,7 +28,7 @@ try {
             'y'          => '100',
             'width'      => 1000,
             'height'     => 400,
-            'fontfile'   => __DIR__ . '/fonts/opensans.ttf',
+            'fontpath'   => __DIR__ . '/fonts/opensans.ttf',
             'fontsize'   => 24,
             'lineheight' => 1.75,
             'color'      => '#fff',
