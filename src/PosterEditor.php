@@ -94,43 +94,6 @@ class PosterEditor
     }
 
     /**
-     * Create resource using file path.
-     *
-     * @param string  $file Path to image file.
-     * @param integer $type Optional. File image type.
-     *
-     * @return instance
-     */
-    public function createResource($file, $type = null)
-    {
-        if (null === $type) {
-            list($width, $height, $type) = getimagesize($file);
-        }
-
-        switch ($type) {
-            case IMAGETYPE_GIF:
-                $image = imagecreatefromgif($file);
-                break;
-
-            case IMAGETYPE_JPEG:
-                $image = imagecreatefromjpeg($file);
-                break;
-
-            case IMAGETYPE_PNG:
-                $image = imagecreatefrompng($file);
-                break;
-
-            case IMAGETYPE_WEBP:
-                $image = imagecreatefromwebp($file);
-
-            default:
-                return $this->handleError('Unsupported image type');
-        }
-
-        return $image;
-    }
-
-    /**
      * Make new image instance from file.
      *
      * @param string $file Path to file.
@@ -147,7 +110,35 @@ class PosterEditor
         list($width, $height, $type) = getimagesize($file);
 
         $this->canvas($width, $height);
-        $this->insert($file);
+
+        $temp = $this->createFromFile($file, $type);
+
+        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $width, $height);
+        imagedestroy($temp);
+
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Build new image instance from binary data.
+     *
+     * @param string $data Binary image data.
+     *
+     * @return $this
+     */
+    public function build($data)
+    {
+        // Get image dimensions.
+        list($width, $height, $type) = getimagesizefromstring($data);
+
+        $this->canvas($width, $height);
+
+        $temp = $this->createFromString($data);
+
+        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $width, $height);
+        imagedestroy($temp);
 
         $this->type = $type;
 
@@ -168,7 +159,7 @@ class PosterEditor
     {
         $defaults = array(
             'color'   => array(0, 0, 0),
-            'opacity' => 0,
+            'opacity' => 100,
         );
 
         $options = array_merge($defaults, $options);
@@ -183,6 +174,7 @@ class PosterEditor
         // Turn off transparency blending (temporarily)
         imagealphablending($this->resource, false);
 
+        // Get color from options.
         $color = $this->getColor($options);
 
         // Completely fill the background with transparent color
@@ -695,6 +687,34 @@ class PosterEditor
     }
 
     /**
+     * Rotate image.
+     *
+     * @param float $angle   Rotation angle.
+     * @param int   $options Optional. Optional. List of rotation options.
+     *
+     * @return $this
+     */
+    public function rotate($angle, $options = array())
+    {
+        $defaults = array(
+            'color'   => array(0, 0, 0),
+            'opacity' => 100,
+        );
+
+        $options = array_merge($defaults, $options);
+
+        // Get color from options.
+        $color = $this->getColor($options);
+
+        $this->resource = imagerotate($this->resource, $angle, $color);
+
+        $this->width = imagesx($this->resource);
+        $this->height = imagesy($this->resource);
+
+        return $this;
+    }
+
+    /**
      * Append another image instance.
      *
      * @param string $image   PosterEditor image instance.
@@ -787,7 +807,7 @@ class PosterEditor
             $options['y'] = $this->findCenter($this->height, $options['height']);
         }
 
-        $temp = $this->createResource($file, $type);
+        $temp = $this->createFromFile($file, $type);
 
         imagecopyresampled($this->resource, $temp, $options['x'], $options['y'], 0, 0, $options['width'], $options['height'], $width, $height);
         imagedestroy($temp);
@@ -842,6 +862,7 @@ class PosterEditor
             $this->drawDebug($options);
         }
 
+        // Get color from options.
         $color = $this->getColor($options);
 
         // Get wrapped text and updated font-size.
@@ -1073,6 +1094,55 @@ class PosterEditor
                 $this->type = IMAGETYPE_WEBP;
                 break;
         }
+    }
+
+    /**
+     * Create image using file path.
+     *
+     * @param string  $file Path to image file.
+     * @param integer $type Optional. File image type.
+     *
+     * @return instance
+     */
+    protected function createFromFile($file, $type = null)
+    {
+        if (null === $type) {
+            list($width, $height, $type) = getimagesize($file);
+        }
+
+        switch ($type) {
+            case IMAGETYPE_GIF:
+                $image = imagecreatefromgif($file);
+                break;
+
+            case IMAGETYPE_JPEG:
+                $image = imagecreatefromjpeg($file);
+                break;
+
+            case IMAGETYPE_PNG:
+                $image = imagecreatefrompng($file);
+                break;
+
+            case IMAGETYPE_WEBP:
+                $image = imagecreatefromwebp($file);
+
+            default:
+                return $this->handleError('Unsupported image type');
+        }
+
+        return $image;
+    }
+
+    /**
+     * Create a new image from the image stream in the string.
+     *
+     * @param string $data A string containing the image data.
+     *
+     * @return instance
+     */
+    protected function createFromString($data)
+    {
+        return imagecreatefromstring($data);
     }
 
     /**
