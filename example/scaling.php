@@ -32,7 +32,7 @@ try {
             'height'     => 200,
             'horizontal' => 'left',
             'vertical'   => 'top',
-            'fontpath'   => __DIR__ . '/fonts/merriweather.ttf',
+            'fontpath'   => '/fonts/merriweather.ttf',
             'fontsize'   => 120,
             'lineheight' => 1.75,
             'color'      => '#ffffff',

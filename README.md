@@ -236,11 +236,11 @@ $image->text(
     array(
         'x'          => 100,
         'y'          => 100,
-        'width'      => 1000,                 // Calculate width for nulled values
-        'height'     => 400,                  // Calculate height for nulled values
+        'width'      => 1000,                 // Use image width if null or unset
+        'height'     => 400,                  // Use image height if null or unset
         'horizontal' => 'center',             // Can be left/right/center
         'vertical'   => 'center',             // Can be top/center/bottom
-        'fontpath'   => 'fonts/opensans.ttf',
+        'fontpath'   => 'fonts/opensans.ttf', // Can only be .ttf
         'fontsize'   => 24,
         'lineheight' => 1.75,
         'color'      => '#ffffff',
@@ -273,7 +273,7 @@ $image->text(
         'x'          => 50,
         'y'          => 100,
         'width'      => 800,
-        'fontpath'   => __DIR__ . '/fonts/merriweather.ttf',
+        'fontpath'   => '/fonts/merriweather.ttf',
         'fontsize'   => 48,
         'lineheight' => 1.5,
         'color'      => '#9999ff',
@@ -287,7 +287,7 @@ $image->text(
         'x'          => 50,
         'y'          => 100 + $boundary['height'],
         'width'      => 800,
-        'fontpath'   => __DIR__ . '/fonts/opensans.ttf',
+        'fontpath'   => '/fonts/opensans.ttf',
         'fontsize'   => 20,
         'lineheight' => 1.5,
         'color'      => '#ff9999',
