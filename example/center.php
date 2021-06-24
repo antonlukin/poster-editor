@@ -12,15 +12,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$time_start = microtime(true);
-
 try {
     $image = new PosterEditor\PosterEditor();
-
-    // Create from image and fit 1200x630 area.
     $image->make('images/bridge.jpg')->fit(1200, 630);
-
-    // Grayscale and invert.
     $image->grayscale()->brightness(-40);
 
     $image->text(
@@ -28,24 +22,22 @@ try {
         array(
             'x'          => 100,
             'y'          => 100,
-            'width'      => 1000,
-            'height'     => 400,
-            'horizontal' => 'center',
-            'vertical'   => 'center',
-            'fontpath'   => __DIR__ . '/fonts/opensans.ttf',
+            'width'      => 1000,                 // Calculate width for nulled values
+            'height'     => 400,                  // Calculate height for nulled values
+            'horizontal' => 'center',             // Can be left/right/center
+            'vertical'   => 'center',             // Can be top/center/bottom
+            'fontpath'   => 'fonts/opensans.ttf',
             'fontsize'   => 24,
             'lineheight' => 1.75,
             'color'      => '#ffffff',
+            'opacity'    => 1,
             'debug'      => true,
         )
     );
 
-    // Show it.
-    $image->show(90);
+    $image->show('jpg', 70);
 
 } catch(Exception $e) {
     echo $e->getMessage();
     exit;
 }
-
-echo '<b>Total Execution Time:</b> ' . (microtime(true) - $time_start);

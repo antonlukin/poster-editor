@@ -14,11 +14,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
+    $image->make('images/bridge.jpg')->resize(100, 200);
 
-    // Create from image and resize it down.
-    $image->make('images/bridge.jpg')->resize(300, 500, false);
-
-    // Show it.
     $image->show();
 
 } catch(Exception $e) {

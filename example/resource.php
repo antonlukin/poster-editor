@@ -14,20 +14,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-
-    // Create from image and fit 600x600 area.
     $image->make('images/bridge.jpg')->fit(600, 600);
 
-    // Get resource
-    $resource = $image->getResource();
-
-    // Use some raw GD functions
+    $resource = $image->get();
     imagefilter($resource, IMG_FILTER_COLORIZE, 0, 200, 0);
+    $image->set($resource);
 
-    // Set updated resource
-    $image->setResource($resource);
-
-    // Show it.
     $image->show();
 
 } catch(Exception $e) {

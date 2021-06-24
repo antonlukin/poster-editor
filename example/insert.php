@@ -14,11 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-
-    // Create from image and crop 600x600 area.
-    $image->make('images/bridge.jpg')->fit(600, 600, 'bottom-right');
-
-    // Grayscale and invert.
+    $image->make('images/bridge.jpg')->fit(1000, 600, 'bottom-left');
     $image->grayscale()->invert();
 
     $image->insert(
@@ -28,7 +24,6 @@ try {
         )
     );
 
-    // Show it.
     $image->show(100);
 
 } catch(Exception $e) {

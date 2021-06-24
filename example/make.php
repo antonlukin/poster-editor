@@ -1,6 +1,6 @@
 <?php
 /**
- * Blur image example.
+ * Append image example.
  * php version 7.1
  *
  * @category PHP
@@ -13,10 +13,12 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->blur();
+    $file = file_get_contents('images/bridge.jpg');
 
-    $image->show();
+    $image = new PosterEditor\PosterEditor();
+    $image->make($file)->downsize(null, 200)->invert()->show();
+
+    $image->insert('images/logo.png')->show('png');
 
 } catch(Exception $e) {
     echo $e->getMessage();

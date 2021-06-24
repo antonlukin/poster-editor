@@ -14,8 +14,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-
-    // Create from image and crop 900x600 left-bottom area.
     $image->make('images/bridge.jpg')->crop(
         900, 600,
         array(
@@ -24,17 +22,15 @@ try {
         )
     );
 
-    // Add filters
     $image->grayscale()->brightness(-40);
 
-    // Draw title with unknown height
     $image->text(
         'Large title with unknown height. Can be multi-line',
         array(
             'x'          => 50,
             'y'          => 100,
             'width'      => 800,
-            'fontpath'   => __DIR__ . '/fonts/merriweather.ttf',
+            'fontpath'   => 'fonts/merriweather.ttf',
             'fontsize'   => 48,
             'lineheight' => 1.5,
             'color'      => '#9999ff',
@@ -42,14 +38,13 @@ try {
         $boundary
     );
 
-    // Draw text right after title
     $image->text(
         'This text appears right after title using smart boundaries',
         array(
             'x'          => 50,
             'y'          => 100 + $boundary['height'],
             'width'      => 800,
-            'fontpath'   => __DIR__ . '/fonts/opensans.ttf',
+            'fontpath'   => 'fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#ff9999',
@@ -57,7 +52,6 @@ try {
         $boundary
     );
 
-    // Show it.
     $image->show();
 
 } catch(Exception $e) {

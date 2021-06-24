@@ -15,7 +15,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 try {
     $image = new PosterEditor\PosterEditor();
 
-    // Create canvas.
     $image->canvas(
         500, 500,
         array(

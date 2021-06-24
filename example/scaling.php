@@ -41,7 +41,7 @@ try {
     );
 
     // Save it.
-    $image->save('/tmp/temp.jpg', 90);
+    $image->save('/tmp/temp.jpg');
 
 } catch(Exception $e) {
     echo $e->getMessage();

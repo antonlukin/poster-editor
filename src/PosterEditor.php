@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 1.0.0
+  * @version  Release: 5.0
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -71,7 +71,7 @@ class PosterEditor
      *
      * @return resource
      */
-    public function getResource()
+    public function get()
     {
         return $this->resource;
     }
@@ -83,7 +83,7 @@ class PosterEditor
      *
      * @return $this
      */
-    public function setResource($resource)
+    public function set($resource)
     {
         $this->resource = $resource;
 
@@ -94,64 +94,79 @@ class PosterEditor
     }
 
     /**
-     * Make new image instance from file.
+     * Make new image instance from file or binary data.
      *
-     * @param string $file Path to file.
+     * @param string $data Binary data or path to file.
      *
      * @return $this
      */
-    public function make($file)
+    public function make($data)
     {
-        if (!is_readable($file)) {
-            return $this->handleError('Image is not a valid file');
+        switch (true) {
+            case $this->isBinary($data):
+                $image = $this->createFromString($data);
+                break;
+
+            default:
+                $image = $this->createFromFile($data);
         }
 
-        // Get image dimensions.
-        list($width, $height, $type) = getimagesize($file);
+        list($width, $height, $type, $source) = $image;
 
-        $this->canvas($width, $height);
-
-        $temp = $this->createFromFile($file, $type);
-
-        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $width, $height);
-        imagedestroy($temp);
-
+        $this->copyResampled($source, 0, 0, 0, 0, $width, $height, $width, $height);
         $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Build new image instance from binary data.
+     * Paste over another image.
      *
-     * @param string $data Binary image data.
+     * Paste a given image source over the current image with an optional position.
+     *
+     * @param string $data    Binary data or path to file or another class instance.
+     * @param array  $options List of x/y relative offset coords from top left corner. Default: centered.
      *
      * @return $this
      */
-    public function build($data)
+    public function insert($data, $options = array())
     {
-        // Get image dimensions.
-        list($width, $height, $type) = getimagesizefromstring($data);
+        $defaults = array(
+            'x' => null,
+            'y' => null,
+        );
 
-        $this->canvas($width, $height);
+        $options = array_merge($defaults, $options);
 
-        $temp = $this->createFromString($data);
+        switch (true) {
+            case $this->isInstance($data):
+                $image = $this->createFromInstance($data);
+                break;
 
-        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $width, $height);
-        imagedestroy($temp);
+            case $this->isBinary($data):
+                $image = $this->createFromString($data);
+                break;
 
-        $this->type = $type;
+            default:
+                $image = $this->createFromFile($data);
+        }
+
+        list($width, $height, $type, $source) = $image;
+
+        $options = $this->calcPosition($options, $width, $height);
+
+        imagecopyresampled($this->resource, $source, $options['x'], $options['y'], 0, 0, $width, $height, $width, $height);
+        imagedestroy($source);
 
         return $this;
     }
 
     /**
      * Intialise the canvas by width and height.
-     * Create square if the height param is empty.
      *
      * @param integer $width   Canvas width.
      * @param integer $height  Canvas height.
-     * @param string  $options Optional. Background color.
+     * @param string  $options Optional. Background color options. Default: black.
      *
      * @return $this
      */
@@ -190,18 +205,19 @@ class PosterEditor
     }
 
     /**
-     * Attach image to new HTTP response.
-     *
      * Sends HTTP response with current image in given format and quality.
-     * Quality is not applied for PNG compression.
-     *
+
+     * @param string  $format  Optional. File image extension. By default used type from make or insert function.
      * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
-     * @param string  $format  Optional. File image extension. By default use type from make or insert function.
      *
      * @return void
      */
-    public function show($quality = 90, $format = null)
+    public function show($format = null, $quality = 90)
     {
+        if (empty($format)) {
+            $format = pathinfo($path, PATHINFO_EXTENSION);
+        }
+
         $this->setType($format);
 
         $quality = $this->getParam($quality, 0, 100);
@@ -227,20 +243,18 @@ class PosterEditor
                 imagejpeg($this->resource, null, $quality);
                 break;
         }
-
-        return $this->cleanup();
     }
 
     /**
-     * Save the image
+     * Save the image.
      *
      * @param string  $path    Path to the file where to write the image data.
-     * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
      * @param string  $format  Optional. File image extension. By default use from path.
+     * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
      *
      * @return $this
      */
-    public function save($path, $quality = 90, $format = null)
+    public function save($path, $format = null, $quality = 90)
     {
         $folder = dirname($path);
 
@@ -272,8 +286,6 @@ class PosterEditor
             default:
                 imagejpeg($this->resource, $path, $quality);
         }
-
-        return $this->cleanup();
     }
 
     /**
@@ -281,19 +293,9 @@ class PosterEditor
      *
      * @return void
      */
-    public function cleanup()
+    public function destroy()
     {
         imagedestroy($this->resource);
-    }
-
-    /**
-     * Returns the height in pixels of the current image.
-     *
-     * @return int
-     */
-    public function height()
-    {
-        return $this->height;
     }
 
     /**
@@ -307,54 +309,76 @@ class PosterEditor
     }
 
     /**
-     * Resize image to desired dimensions.
+     * Returns the height in pixels of the current image.
      *
+     * @return int
+     */
+    public function height()
+    {
+        return $this->height;
+    }
+
+    /**
      * Resizes current image based on given width and height.
-     * Scale param set constraint the current aspect-ratio of the image.
      *
-     * @param integer|null $width  Target image width.
-     * @param integer|null $height Target image height.
-     * @param boolean      $scale  Optional. Constraint the current aspect-ratio of the image.
-     * @param boolean      $upsize Optional. Keep image from being upsized. Aplies on scale true.
+     * @param integer $width  Target image width.
+     * @param integer $height Target image height.
      *
      * @return $this
      */
-    public function resize($width, $height, $scale = true, $upsize = true)
+    public function resize($width, $height)
+    {
+        $this->copyResampled($this->resource, 0, 0, 0, 0, $width, $height, $this->width, $this->height);
+
+        return $this;
+    }
+
+    /**
+     * Upsize image on the largest side.
+     *
+     * @param integer $width  Optional. Target image width. By default calculated by ratio.
+     * @param integer $height Optional. Target image height. By default calculated by ratio.
+     *
+     * @return $this
+     */
+    public function upsize($width = null, $height = null)
     {
         $ratio = $this->width / $this->height;
 
-        if (null === $width) {
-            $width = $this->width;
+        list($width, $height) = $this->calcResizes($width, $height, $ratio);
 
-            // Try to calc new width by ratio.
-            if (null !== $height) {
-                $width = $height * $ratio;
-            }
+        if ($width / $height > $ratio) {
+            $height = intval($width / $ratio);
+        } else {
+            $width = intval($height * $ratio);
         }
 
-        if (null === $height) {
-            $height = $this->height;
+        $this->copyResampled($this->resource, 0, 0, 0, 0, $width, $height, $this->width, $this->height);
 
-            // Try to calc new height by ratio.
-            if (null !== $width) {
-                $height = $width / $ratio;
-            }
+        return $this;
+    }
+
+    /**
+     * Downside image on the lowest side.
+     *
+     * @param integer $width  Optional. Target image width. By default calculated by ratio.
+     * @param integer $height Optional. Target image height. By default calculated by ratio.
+     *
+     * @return $this
+     */
+    public function downsize($width = null, $height = null)
+    {
+        $ratio = $this->width / $this->height;
+
+        list($width, $height) = $this->calcResizes($width, $height, $ratio);
+
+        if ($width / $height > $ratio) {
+            $width = intval($height * $ratio);
+        } else {
+            $height = intval($width / $ratio);
         }
 
-        if (true === $scale) {
-            list($width, $height) = $this->calcResizes($width, $height, $ratio, $upsize);
-        }
-
-        $image = array(
-            'width'  => $this->width,
-            'height' => $this->height,
-        );
-
-        $temp = $this->resource;
-        $this->canvas($width, $height);
-
-        imagecopyresampled($this->resource, $temp, 0, 0, 0, 0, $width, $height, $image['width'], $image['height']);
-        imagedestroy($temp);
+        $this->copyResampled($this->resource, 0, 0, 0, 0, $width, $height, $this->width, $this->height);
 
         return $this;
     }
@@ -367,32 +391,23 @@ class PosterEditor
      *
      * @param integer $width   Width of the rectangular cutout.
      * @param integer $height  Height of the rectangular cutout.
-     * @param array   $options Optional. List of image options.
+     * @param array   $options Optional. List of crop coords. By default crop from center.
      *
      * @return $this
      */
     public function crop($width, $height, $options = array())
     {
         $defaults = array(
-            'x' => null,
-            'y' => null,
+            'x'      => null,
+            'y'      => null,
         );
 
         $options = array_merge($defaults, $options);
 
-        if (null === $options['x']) {
-            $options['x'] = $this->findCenter($this->width, $width);
-        }
+        // Update X and Y for nulled arguments.
+        $options = $this->calcPosition($options, $width, $height);
 
-        if (null === $options['y']) {
-            $options['y'] = $this->findCenter($this->height, $height);
-        }
-
-        $temp = $this->resource;
-        $this->canvas($width, $height);
-
-        imagecopyresampled($this->resource, $temp, 0, 0, $options['x'], $options['y'], $width, $height, $width, $height);
-        imagedestroy($temp);
+        $this->copyResampled($this->resource, 0, 0, $options['x'], $options['y'], $width, $height, $width, $height);
 
         return $this;
     }
@@ -413,7 +428,7 @@ class PosterEditor
     public function fit($width, $height, $position = 'center')
     {
         // Resize without upsizing.
-        $this->resize($width, $height, true, false);
+        $this->upsize($width, $height);
 
         switch ($position) {
             case 'top-left':
@@ -538,7 +553,7 @@ class PosterEditor
     }
 
     /**
-     * Draw an ellipse
+     * Draw an ellipse.
      *
      * @param integer $x       X-Coordinate of the center point.
      * @param integer $y       Y-Coordinate of the center point.
@@ -710,107 +725,6 @@ class PosterEditor
 
         $this->width = imagesx($this->resource);
         $this->height = imagesy($this->resource);
-
-        return $this;
-    }
-
-    /**
-     * Append another image instance.
-     *
-     * @param string $image   PosterEditor image instance.
-     * @param array  $options Optional. List of image options.
-     *
-     * @return $this
-     */
-    public function append($image, $options = array())
-    {
-        $defaults = array(
-            'x' => null,
-            'y' => null,
-        );
-
-        $options = array_merge($defaults, $options);
-
-        if (!($image instanceof PosterEditor)) {
-            return $this->handleError('Image is not valid instance of this class.');
-        }
-
-        $width  = $image->width;
-        $height = $image->height;
-
-        if (null === $options['x']) {
-            $options['x'] = $this->findCenter($this->width, $width);
-        }
-
-        if (null === $options['y']) {
-            $options['y'] = $this->findCenter($this->height, $height);
-        }
-
-        imagecopyresampled($this->resource, $image->resource, $options['x'], $options['y'], 0, 0, $width, $height, $width, $height);
-        imagedestroy($image->resource);
-
-        return $this;
-    }
-
-    /**
-     * Paste over another image.
-     *
-     * Paste a given image source over the current image with an optional position and dimensions.
-     *
-     * @param string $file    Absolute path to image file.
-     * @param array  $options Optional. List of image options.
-     *
-     * @return $this
-     */
-    public function insert($file, $options = array())
-    {
-        $defaults = array(
-            'x'      => null,
-            'y'      => null,
-            'width'  => null,
-            'height' => null,
-        );
-
-        $options = array_merge($defaults, $options);
-
-        if (!is_readable($file)) {
-            $this->handleError('Image is not a valid file');
-        }
-
-        list($width, $height, $type) = getimagesize($file);
-
-        $ratio = $width / $height;
-
-        if (null === $options['width']) {
-            $options['width'] = $width;
-
-            // Try to calc new width by ratio.
-            if (null !== $options['height']) {
-                $options['width'] = $options['height'] * $ratio;
-            }
-        }
-
-        if (null === $options['height']) {
-            $options['height'] = $height;
-
-            // Try to calc new height by ratio.
-            if (null !== $options['width']) {
-                $options['height'] = $options['width'] / $ratio;
-            }
-        }
-
-        if (null === $options['x']) {
-            $options['x'] = $this->findCenter($this->width, $options['width']);
-        }
-
-        if (null === $options['y']) {
-            $options['y'] = $this->findCenter($this->height, $options['height']);
-        }
-
-        $temp = $this->createFromFile($file, $type);
-
-        imagecopyresampled($this->resource, $temp, $options['x'], $options['y'], 0, 0, $options['width'], $options['height'], $width, $height);
-        imagedestroy($temp);
 
         return $this;
     }
@@ -1099,38 +1013,17 @@ class PosterEditor
     /**
      * Create image using file path.
      *
-     * @param string  $file Path to image file.
-     * @param integer $type Optional. File image type.
+     * @param string $file Path to image file.
      *
-     * @return instance
+     * @return array
      */
-    protected function createFromFile($file, $type = null)
+    protected function createFromFile($file)
     {
-        if (null === $type) {
-            list($width, $height, $type) = getimagesize($file);
-        }
+        list($width, $height, $type) = getimagesize($file);
 
-        switch ($type) {
-            case IMAGETYPE_GIF:
-                $image = imagecreatefromgif($file);
-                break;
+        $source = $this->getSource($file, $type);
 
-            case IMAGETYPE_JPEG:
-                $image = imagecreatefromjpeg($file);
-                break;
-
-            case IMAGETYPE_PNG:
-                $image = imagecreatefrompng($file);
-                break;
-
-            case IMAGETYPE_WEBP:
-                $image = imagecreatefromwebp($file);
-
-            default:
-                return $this->handleError('Unsupported image type');
-        }
-
-        return $image;
+        return array($width, $height, $type, $source);
     }
 
     /**
@@ -1138,11 +1031,61 @@ class PosterEditor
      *
      * @param string $data A string containing the image data.
      *
-     * @return instance
+     * @return array
      */
     protected function createFromString($data)
     {
-        return imagecreatefromstring($data);
+        // Get image dimensions.
+        list($width, $height, $type) = getimagesizefromstring($data);
+
+        $source = imagecreatefromstring($data);
+
+        return array($width, $height, $type, $source);
+    }
+
+    /**
+     * Get image data from instance.
+     *
+     * @param string $instance Instance of PosterEditor class.
+     *
+     * @return array
+     */
+    protected function createFromInstance($instance)
+    {
+        return array($instance->width, $instance->height, $instance->type, $instance->resource);
+    }
+
+    /**
+     * Get image source using file.
+     *
+     * @param string $file Image file.
+     * @param int    $type File type.
+     *
+     * @return instance
+     */
+    protected function getSource($file, $type)
+    {
+        switch ($type) {
+            case IMAGETYPE_GIF:
+                $source = imagecreatefromgif($file);
+                break;
+
+            case IMAGETYPE_JPEG:
+                $source = imagecreatefromjpeg($file);
+                break;
+
+            case IMAGETYPE_PNG:
+                $source = imagecreatefrompng($file);
+                break;
+
+            case IMAGETYPE_WEBP:
+                $source = imagecreatefromwebp($file);
+
+            default:
+                return $this->handleError('Unsupported image type');
+        }
+
+        return $source;
     }
 
     /**
@@ -1164,27 +1107,110 @@ class PosterEditor
      * @param integer $width  Current image width.
      * @param integer $height Current image height.
      * @param float   $ratio  Width to height relation.
-     * @param boolean $upsize Keep image from being upsized.
      *
      * @return array
      */
-    protected function calcResizes($width, $height, $ratio, $upsize)
+    protected function calcResizes($width, $height, $ratio)
     {
-        if (true === $upsize) {
-            if ($width / $height > $ratio) {
-                $width = intval($height * $ratio);
-            } else {
-                $height = intval($width / $ratio);
+        if (null === $width) {
+            $width = $this->width;
+
+            // Try to calc new width by ratio.
+            if (null !== $height) {
+                $width = $height * $ratio;
             }
-        } else {
-            if ($width / $height > $ratio) {
-                $height = intval($width / $ratio);
-            } else {
-                $width = intval($height * $ratio);
+        }
+
+        if (null === $height) {
+            $height = $this->height;
+
+            // Try to calc new height by ratio.
+            if (null !== $width) {
+                $height = $width / $ratio;
             }
         }
 
         return array($width, $height);
+    }
+
+    /**
+     * Update position options for nulled x/y arguments.
+     *
+     * @param array $options Position options.
+     * @param int   $width   Calculated image width.
+     * @param int   $height  Calculated image height.
+     *
+     * @return array
+     */
+    protected function calcPosition($options, $width, $height)
+    {
+        if (null === $options['x']) {
+            $options['x'] = $this->findCenter($this->width, $width);
+        }
+
+        if (null === $options['y']) {
+            $options['y'] = $this->findCenter($this->height, $height);
+        }
+
+        return $options;
+    }
+
+    /**
+     * Helper function to copy and resize part of an image with resampling.
+     *
+     * @param resource $source Source image resource.
+     * @param int      $dx     X-coordinate of destination point.
+     * @param int      $dy     Y-coordinate of destination point.
+     * @param int      $sx     X-coordinate of source point.
+     * @param int      $sy     Y-coordinate of source point.
+     * @param int      $dw     Destination width.
+     * @param int      $dh     Destination height.
+     * @param int      $sw     Source width.
+     * @param int      $sh     Source height.
+     *
+     * @return $this
+     */
+    protected function copyResampled($source, $dx, $dy, $sx, $sy, $dw, $dh, $sw, $sh)
+    {
+        $this->canvas($dw, $dh);
+
+        imagecopyresampled($this->resource, $source, $dx, $dy, $sx, $sy, $dw, $dh, $sw, $sh);
+        imagedestroy($source);
+
+        return $this;
+    }
+
+    /**
+     * Determines if source data is binary data.
+     *
+     * @param string $data File binary data.
+     *
+     * @return boolean
+     */
+    protected function isBinary($data)
+    {
+        if (is_string($data)) {
+            $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $data);
+            return (substr($mime, 0, 4) != 'text' && $mime != 'application/x-empty');
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines if source data is instance of current class.
+     *
+     * @param string $insance Instance of class.
+     *
+     * @return boolean
+     */
+    protected function isInstance($insance)
+    {
+        if ($insance instanceof PosterEditor) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

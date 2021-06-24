@@ -14,12 +14,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-
-    // Create from image and fit it from bottom.
     $image->make('images/bridge.jpg')->fit(1000, 630, 'bottom');
-
-    // Set filters.
-    $image->contrast(5)->brightness(-30);
+    $image->contrast(5)->brightness(-30)->blur();
 
     $image->rectangle(
         20, 20, 960, 590,
@@ -62,8 +58,7 @@ try {
         )
     );
 
-    // Show as png without compressing.
-    $image->show(100, 'png');
+    $image->show('png');
 
 } catch(Exception $e) {
     echo $e->getMessage();

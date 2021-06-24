@@ -14,12 +14,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->fit(600, 300, 'top');
+    $image->make('images/bridge.jpg')->fit(1200, 630, 'bottom')->blackout(50);
 
     $logo = new PosterEditor\PosterEditor();
-    $logo->make('images/logo.png')->resize(300, 50)->grayscale();
+    $logo->make('images/logo.png')->downsize(150, null);
 
-    $image->append($logo)->show();
+    $image->insert($logo, array('x' => 50, 'y' => 50));
+    $image->show();
 
 } catch(Exception $e) {
     echo $e->getMessage();
