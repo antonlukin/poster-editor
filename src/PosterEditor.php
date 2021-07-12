@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.0
+  * @version  Release: 5.2
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -586,9 +586,7 @@ class PosterEditor
     }
 
     /**
-     * Change image brightness.
-     *
-     * Changes the brightness of the current image by the given level.
+     * Change the brightness of the current image by the given level.
      * Use values between -100 for min. brightness 0 for no change and +100 for max.
      *
      * @param integer $level Optional. The level of brightness. Default: 0.
@@ -605,9 +603,7 @@ class PosterEditor
     }
 
     /**
-     * Change the contrast of an image.
-     *
-     * Changes the contrast of the current image by the given level.
+     * Change the contrast of the current image by the given level.
      * Use values between -100 for min contrast 0 for no change and +100 for max.
      *
      * @param integer $level Optional. The level of contrast. Default: 0.
@@ -666,8 +662,6 @@ class PosterEditor
     /**
      * Invert colors of an image.
      *
-     * Reverses all colors of the current image.
-     *
      * @return $this
      */
     public function invert()
@@ -678,8 +672,6 @@ class PosterEditor
     }
 
     /**
-     * Add blackout filter.
-     *
      * Draw black opactity rectangle on image.
      *
      * @param integer $level Optional. Blackout level. Default: 0.
@@ -843,6 +835,9 @@ class PosterEditor
      */
     protected function addBreaklines($text, $options, $output = '')
     {
+        $line = '';
+
+        // Split text to words.
         $words = explode(' ', $text);
 
         foreach ($words as $word) {
