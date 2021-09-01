@@ -1,6 +1,6 @@
 <?php
 /**
- * Text scaling image example.
+ * Long text without spaces example.
  * php version 7.1
  *
  * @category PHP
@@ -12,8 +12,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$time_start = microtime(true);
-
 try {
     $image = new PosterEditor\PosterEditor();
 
@@ -24,16 +22,16 @@ try {
     $image->grayscale()->brightness(-40);
 
     $image->text(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.', // phpcs:ignore
+        '123456789012345678901234567890123456789012345678901234567890123456789012345', // phpcs:ignore
         array(
             'x'          => 100,
             'y'          => 100,
-            'width'      => 900,
+            'width'      => 500,
             'height'     => 200,
             'horizontal' => 'left',
             'vertical'   => 'top',
             'fontpath'   => 'fonts/merriweather.ttf',
-            'fontsize'   => 120,
+            'fontsize'   => 24,
             'lineheight' => 1.75,
             'color'      => '#ffffff',
             'debug'      => true,
@@ -41,10 +39,8 @@ try {
     );
 
     // Save it.
-    $image->save('/tmp/temp.jpg');
+    $image->show();
 
 } catch(Exception $e) {
     echo $e->getMessage();
 }
-
-echo '<b>Total Execution Time:</b> ' . round((microtime(true) - $time_start), 5);

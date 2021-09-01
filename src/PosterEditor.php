@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.2
+  * @version  Release: 5.3
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -799,7 +799,7 @@ class PosterEditor
      * Wrap text to box and update font-size if necessary.
      *
      * @param string $text    Text to draw.
-     * @param array  $options Optional. List of image options.
+     * @param array  $options List of text options.
      *
      * @return string
      */
@@ -811,10 +811,13 @@ class PosterEditor
             // Get lines from wrapped text.
             $lines = explode("\n", $wrapped);
 
+            // Get text width.
+            $width = $this->getTextWidth($wrapped, $options);
+
             // Sum of all lines heights.
             $height = $options['fontsize'] * $options['lineheight'] * count($lines);
 
-            if ($height <= $options['height']) {
+            if ($width <= $options['width'] && $height <= $options['height']) {
                 break;
             }
 
@@ -822,6 +825,21 @@ class PosterEditor
         } while ($options['fontsize'] > 0);
 
         return $wrapped;
+    }
+
+    /**
+     * Calculates text width.
+     *
+     * @param string $text    Text to draw.
+     * @param array  $options List of text options.
+     *
+     * @return int
+     */
+    protected function getTextWidth($text, $options)
+    {
+        $box = imageftbbox($options['fontsize'], 0, $options['fontpath'], $text);
+
+        return $box[2];
     }
 
     /**
