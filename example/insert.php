@@ -24,7 +24,7 @@ try {
         )
     );
 
-    $image->show(100);
+    $image->show();
 
 } catch(Exception $e) {
     echo $e->getMessage();

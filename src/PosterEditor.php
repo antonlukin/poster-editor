@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.3
+  * @version  Release: 5.4
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -214,10 +214,6 @@ class PosterEditor
      */
     public function show($format = null, $quality = 90)
     {
-        if (empty($format)) {
-            $format = pathinfo($path, PATHINFO_EXTENSION);
-        }
-
         $this->setType($format);
 
         $quality = $this->getParam($quality, 0, 100);
@@ -249,12 +245,12 @@ class PosterEditor
      * Save the image.
      *
      * @param string  $path    Path to the file where to write the image data.
-     * @param string  $format  Optional. File image extension. By default use from path.
      * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string  $format  Optional. File image extension. By default use from path.
      *
      * @return $this
      */
-    public function save($path, $format = null, $quality = 90)
+    public function save($path, $quality = 90, $format = null)
     {
         $folder = dirname($path);
 
@@ -1009,16 +1005,16 @@ class PosterEditor
                 $this->type = IMAGETYPE_GIF;
                 break;
 
-            case 'jpg':
-                $this->type = IMAGETYPE_JPEG;
-                break;
-
             case 'png':
                 $this->type = IMAGETYPE_PNG;
                 break;
 
             case 'webp':
                 $this->type = IMAGETYPE_WEBP;
+                break;
+
+            case 'jpg':
+                $this->type = IMAGETYPE_JPEG;
                 break;
         }
     }

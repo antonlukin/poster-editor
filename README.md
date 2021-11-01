@@ -78,15 +78,17 @@ By default black canvas.
 $image->show(string $format = null, int $quality = 90)
 ```
 Sends HTTP response with current image in given format and quality.
-Format is a file image extension. By default used type from `make` or `insert` function.
+Format is a file image extension. By default the response data will be encoded in the type of the current image. If no image type is defined yet, method will return jpeg encoded data.
 Quality is normalized for all file types to a range from 0 (poor quality, small file) to 100 (best quality, big file). 
 The default value is 90. PNG format is losless and the quality affects only image size and compression speed.
 
 ### save
 ```
-$image->save(string $format = null, int $quality = 90)
+$image->save(string $path, int $quality = 90, string $format = null)
 ```
-Save the image. Optional format and quality params same as for `show` method.
+Save the current state of the image object in filesystem. Define optionally a certain path where the image should be saved. The image type will be defined by file extension. If there is no extension available, the response data will be encoded in the type of the current image. If no image type is defined yet, method will return jpeg encoded data. Optionally you can override this with the format parameter. 
+Quality is normalized for all file types to a range from 0 (poor quality, small file) to 100 (best quality, big file). 
+The default value is 90. PNG format is losless and the quality affects only image size and compression speed.
 
 ### destroy
 ```
