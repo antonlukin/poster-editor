@@ -62,7 +62,7 @@ class PosterEditor
     public function __construct()
     {
         if (!extension_loaded('gd') && !extension_loaded('gd2')) {
-            return new handleError('Extension php-gd is not loaded');
+            $this->handleError('Extension php-gd is not loaded');
         }
     }
 
