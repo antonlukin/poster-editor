@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.4
+  * @version  Release: 5.5
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -62,7 +62,7 @@ class PosterEditor
     public function __construct()
     {
         if (!extension_loaded('gd') && !extension_loaded('gd2')) {
-            return new handleError('Extension php-gd is not loaded');
+            $this->handleError('Extension php-gd is not loaded');
         }
     }
 
