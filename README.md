@@ -71,7 +71,7 @@ Options is an array of x/y relative offset coords from top left corner. By defau
 $image->canvas(int $width, int $height, array $options = array())
 ```
 Intialise the canvas by width and height. Background color options is in array of color/opacity settings.
-By default black canvas.
+By default black canvas without opacity.
 
 ### show
 ```
