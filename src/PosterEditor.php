@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.6
+  * @version  Release: 5.7
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -174,7 +174,7 @@ class PosterEditor
     {
         $defaults = array(
             'color'   => array(0, 0, 0),
-            'opacity' => 0,
+            'opacity' => 100,
         );
 
         $options = array_merge($defaults, $options);

@@ -1,6 +1,6 @@
 {
 	"name": "antonlukin/poster-editor",
-	"version": "5.6",
+	"version": "5.7",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
 	"homepage": "https://github.com/antonlukin/poster-editor",
