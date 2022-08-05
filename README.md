@@ -210,7 +210,21 @@ Rotate image. Set an angle in degrees and optional color of the uncovered zone a
 ```
 $image->text(string $text, array $options = array(), array &$boundary = array())
 ```
-Draw text on image. Look for all possible options in the examples below.
+Draw text on image. Possible options:
+- **x**: X-Coordinate of text box starting point.
+- **y**: Y-Coordinate of text box starting point.
+- **width**: Width of text box. Calculated from image size for nulled values.
+- **height**: Height of text box. Calculated from image size for nulled values.
+- **fontsize**: Maximum font size. Will be scaled down if the text doesn't fit box.
+- **color**: Color of text. Can be rgb-array or '#ffffff' format.
+- **lineheight**: Line height of text.
+- **opacity**: Text opacity from 0 to 100.
+- **horizontal**: Horizontal alignment. Can be left/right/center/justify.
+- **vertical**: Vertical alginment. Can be top/center/bottom/justify.
+- **fontpath**: Path to .ttf font file.
+- **debug**: Draws text box rectangle if true.
+
+Use boundary to get actual dimensions of the drawn text box. See detailed examples below.
 
 ## Examples
 
@@ -238,11 +252,11 @@ $image->text(
     array(
         'x'          => 100,
         'y'          => 100,
-        'width'      => 1000,                 // Use image width if null or unset
-        'height'     => 400,                  // Use image height if null or unset
-        'horizontal' => 'center',             // Can be left/right/center
-        'vertical'   => 'center',             // Can be top/center/bottom
-        'fontpath'   => 'fonts/opensans.ttf', // Can only be .ttf
+        'width'      => 1000,                 
+        'height'     => 400,                  
+        'horizontal' => 'center',             
+        'vertical'   => 'center',             
+        'fontpath'   => 'fonts/opensans.ttf',
         'fontsize'   => 24,
         'lineheight' => 1.75,
         'color'      => '#ffffff',
@@ -255,6 +269,35 @@ $image->show('jpg', 70);
 ```
 #### Result
 <img src="example/samples/center.jpg" alt="multiline centered text" width="400" />
+
+### Draw and justify multiline text
+```php
+$image = new PosterEditor\PosterEditor();
+$image->make('images/bridge.jpg')->fit(900, 600);
+$image->blackout(70);
+
+$image->text(
+    'Lorem ipsum dolor d d 4 g sit amet, consectetur adipiscing et, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex eas commodo consequat sdfsdfl', // phpcs:ignore
+    array(
+        'x'          => 100,
+        'y'          => 100,
+        'width'      => 600,                   
+        'height'     => 400,                   
+        'horizontal' => 'justify',             
+        'vertical'   => 'justify',             
+        'fontpath'   => 'fonts/opensans.ttf',
+        'fontsize'   => 20,
+        'lineheight' => 1.5,
+        'color'      => '#ffffff',
+        'opacity'    => 1,
+        'debug'      => true,
+    )
+);
+
+$image->show('png');
+```
+#### Result
+<img src="example/samples/justify.png" alt="multiline justified text" width="400" />
 
 ### Use boundaries to draw one title right after another
 ```php

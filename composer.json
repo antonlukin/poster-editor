@@ -1,6 +1,6 @@
 {
 	"name": "antonlukin/poster-editor",
-	"version": "5.7",
+	"version": "5.8",
 	"description": "Wrapper for PHP's GD Library for easy image manipulation",
 	"keywords": ["php", "image", "text", "gd"],
 	"homepage": "https://github.com/antonlukin/poster-editor",
@@ -26,5 +26,10 @@
 		"files": [
 			"src/PosterEditor.php"
 		]
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	}
 }

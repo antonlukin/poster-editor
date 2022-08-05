@@ -33,7 +33,7 @@ try {
             'horizontal' => 'left',
             'vertical'   => 'top',
             'fontpath'   => 'fonts/merriweather.ttf',
-            'fontsize'   => 120,
+            'fontsize'   => 100,
             'lineheight' => 1.75,
             'color'      => '#ffffff',
             'debug'      => true,

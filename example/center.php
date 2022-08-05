@@ -24,8 +24,8 @@ try {
             'y'          => 100,
             'width'      => 1000,                 // Calculate width for nulled values
             'height'     => 400,                  // Calculate height for nulled values
-            'horizontal' => 'center',             // Can be left/right/center
-            'vertical'   => 'center',             // Can be top/center/bottom
+            'horizontal' => 'center',             // Can be left/right/center/justify
+            'vertical'   => 'center',             // Can be top/center/bottom/justify
             'fontpath'   => 'fonts/opensans.ttf',
             'fontsize'   => 24,
             'lineheight' => 1.75,

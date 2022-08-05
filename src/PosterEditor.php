@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.7
+  * @version  Release: 5.8
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -38,21 +38,21 @@ class PosterEditor
     /**
      * Canvas width
      *
-     * @var integer
+     * @var int
      */
     protected $width;
 
     /**
      * Canvas height
      *
-     * @var integer
+     * @var int
      */
     protected $height;
 
     /**
      * Image type
      *
-     * @var integer
+     * @var int
      */
     protected $type;
 
@@ -164,9 +164,9 @@ class PosterEditor
     /**
      * Intialise the canvas by width and height.
      *
-     * @param integer $width   Canvas width.
-     * @param integer $height  Canvas height.
-     * @param string  $options Optional. Background color options. Default: black.
+     * @param int    $width   Canvas width.
+     * @param int    $height  Canvas height.
+     * @param string $options Optional. Background color options. Default: black.
      *
      * @return $this
      */
@@ -208,7 +208,7 @@ class PosterEditor
      * Sends HTTP response with current image in given format and quality.
 
      * @param string  $format  Optional. File image extension. By default used type from make or insert function.
-     * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param int $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
      *
      * @return void
      */
@@ -245,8 +245,8 @@ class PosterEditor
      * Save the image.
      *
      * @param string  $path    Path to the file where to write the image data.
-     * @param integer $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
-     * @param string  $format  Optional. File image extension. By default use from path.
+     * @param int    $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string $format  Optional. File image extension. By default use from path.
      *
      * @return $this
      */
@@ -317,8 +317,8 @@ class PosterEditor
     /**
      * Resizes current image based on given width and height.
      *
-     * @param integer $width  Target image width.
-     * @param integer $height Target image height.
+     * @param int $width  Target image width.
+     * @param int $height Target image height.
      *
      * @return $this
      */
@@ -332,8 +332,8 @@ class PosterEditor
     /**
      * Upsize image on the largest side.
      *
-     * @param integer $width  Optional. Target image width. By default calculated by ratio.
-     * @param integer $height Optional. Target image height. By default calculated by ratio.
+     * @param int $width  Optional. Target image width. By default calculated by ratio.
+     * @param int $height Optional. Target image height. By default calculated by ratio.
      *
      * @return $this
      */
@@ -357,8 +357,8 @@ class PosterEditor
     /**
      * Downside image on the lowest side.
      *
-     * @param integer $width  Optional. Target image width. By default calculated by ratio.
-     * @param integer $height Optional. Target image height. By default calculated by ratio.
+     * @param int $width  Optional. Target image width. By default calculated by ratio.
+     * @param int $height Optional. Target image height. By default calculated by ratio.
      *
      * @return $this
      */
@@ -385,8 +385,8 @@ class PosterEditor
      * Cut out a rectangular part of the current image with given width and height.
      * Define optional x,y coordinates to move the top-left corner of the cutout to a certain position.
      *
-     * @param integer $width   Width of the rectangular cutout.
-     * @param integer $height  Height of the rectangular cutout.
+     * @param int $width   Width of the rectangular cutout.
+     * @param int $height  Height of the rectangular cutout.
      * @param array   $options Optional. List of crop coords. By default crop from center.
      *
      * @return $this
@@ -415,8 +415,8 @@ class PosterEditor
      * The method will find the best fitting aspect ratio on the current image automatically,
      * cut it out and resize it to the given dimension.
      *
-     * @param integer $width    Target image width.
-     * @param integer $height   Target image height.
+     * @param int $width    Target image width.
+     * @param int $height   Target image height.
      * @param string  $position Optional. Crop position.
      *
      * @return $this
@@ -479,10 +479,10 @@ class PosterEditor
     /**
      * Draw a line from x,y point 1 to x,y point 2 on current image.
      *
-     * @param integer $x1      X-Coordinate of the starting point.
-     * @param integer $y1      Y-Coordinate of the starting point.
-     * @param integer $x2      X-Coordinate of the end point.
-     * @param integer $y2      Y-Coordinate of the end point.
+     * @param int $x1      X-Coordinate of the starting point.
+     * @param int $y1      Y-Coordinate of the starting point.
+     * @param int $x2      X-Coordinate of the end point.
+     * @param int $y2      Y-Coordinate of the end point.
      * @param array   $options Optional. List of line options.
      *
      * @return $this
@@ -513,10 +513,10 @@ class PosterEditor
     /**
      * Draw a colored rectangle on current image.
      *
-     * @param integer $x       X-Coordinate of the starting point.
-     * @param integer $y       Y-Coordinate of the starting point.
-     * @param integer $width   Width in pixels.
-     * @param integer $height  Height in pixels.
+     * @param int $x       X-Coordinate of the starting point.
+     * @param int $y       Y-Coordinate of the starting point.
+     * @param int $width   Width in pixels.
+     * @param int $height  Height in pixels.
      * @param array   $options Optional. List of line options.
      *
      * @return $this
@@ -551,10 +551,10 @@ class PosterEditor
     /**
      * Draw an ellipse.
      *
-     * @param integer $x       X-Coordinate of the center point.
-     * @param integer $y       Y-Coordinate of the center point.
-     * @param integer $width   Width in pixels.
-     * @param integer $height  Height in pixels.
+     * @param int $x       X-Coordinate of the center point.
+     * @param int $y       Y-Coordinate of the center point.
+     * @param int $width   Width in pixels.
+     * @param int $height  Height in pixels.
      * @param array   $options Optional. List of line options.
      *
      * @return $this
@@ -585,7 +585,7 @@ class PosterEditor
      * Change the brightness of the current image by the given level.
      * Use values between -100 for min. brightness 0 for no change and +100 for max.
      *
-     * @param integer $level Optional. The level of brightness. Default: 0.
+     * @param int $level Optional. The level of brightness. Default: 0.
      *
      * @return $this
      */
@@ -602,7 +602,7 @@ class PosterEditor
      * Change the contrast of the current image by the given level.
      * Use values between -100 for min contrast 0 for no change and +100 for max.
      *
-     * @param integer $level Optional. The level of contrast. Default: 0.
+     * @param int $level Optional. The level of contrast. Default: 0.
      *
      * @return $this
      */
@@ -670,7 +670,7 @@ class PosterEditor
     /**
      * Draw black opactity rectangle on image.
      *
-     * @param integer $level Optional. Blackout level. Default: 0.
+     * @param int $level Optional. Blackout level from 0 to 100. Default: 0.
      *
      * @return $this
      */
@@ -779,8 +779,11 @@ class PosterEditor
         foreach ($lines as $index => $line) {
             list($x, $y, $width, $height) = $this->getOffset($options, $lines, $index);
 
-            // Draw text line.
-            imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $line);
+            // Check if last line
+            $last = ($index === count($lines) - 1);
+
+            // Draw single line
+            $this->drawLine($line, $options, $width, $x, $y, $color, $last);
 
             $boundary = array(
                 'width'  => max($width, $boundary['width']),
@@ -789,6 +792,46 @@ class PosterEditor
         }
 
         return $this;
+    }
+
+    /**
+     * Draw single text line on image.
+     * For justify horizontal alignment split the string word by word and add calclated extraspace.
+     *
+     * @param string $line     Single text line
+     * @param array  $options  List of text settings.
+     * @param int    $width    Actual strin length.
+     * @param int    $x        X-Coordinate of string starting point.
+     * @param int    $y        Y-Coordinate of string starting point.
+     * @param int    $color    Text color.
+     * @param bool   $last     Is this string is last in the text.
+     *
+     * @return $this
+     */
+    protected function drawLine($line, $options, $width, $x, $y, $color, $last) {
+        if ('justify' !== $options['horizontal']) {
+            return imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $line);
+        }
+
+        $words = explode(' ', $line);
+
+        // Calc extraspace for justify alignment
+        $extraspace = $options['fontsize'] / 50;
+
+        if (false === $last) {
+            $extraspace = $extraspace + ($options['width'] - $width) / (count($words) - 1);
+        }
+
+        foreach ($words as $index => $word) {
+            if (count($words) > $index + 1) {
+                $word = $word . ' ';
+            }
+
+            $sizes = imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $word);
+
+            // Update x-coord
+            $x = $x + abs($sizes[6] - $sizes[4]) + $extraspace;
+        }
     }
 
     /**
@@ -886,7 +929,7 @@ class PosterEditor
      *
      * @param array $options List of image options.
      *
-     * @return integer
+     * @return int
      */
     protected function getColor($options)
     {
@@ -910,11 +953,11 @@ class PosterEditor
     /**
      * Get param using min max values.
      *
-     * @param integer $value Initial value.
-     * @param integer $min   Minimulm value.
-     * @param integer $max   Maximum value.
+     * @param int $value Initial value.
+     * @param int $min   Minimulm value.
+     * @param int $max   Maximum value.
      *
-     * @return integer
+     * @return int
      */
     protected function getParam($value, $min, $max)
     {
@@ -926,9 +969,9 @@ class PosterEditor
     /**
      * Get offset for text to draw.
      *
-     * @param integer $options List of image options.
-     * @param array   $lines   List of text lines.
-     * @param integer $index   Current line index in the loop.
+     * @param int   $options List of image options.
+     * @param array $lines   List of text lines.
+     * @param int   $index   Current line index in the loop.
      *
      * @return array
      */
@@ -959,14 +1002,19 @@ class PosterEditor
                 break;
         }
 
+        $bias = count($lines);
+
         switch ($options['vertical']) {
             case 'center':
-                $y = $y + (($options['height'] - ($height * count($lines))) / 2);
+                $y = $y + (($options['height'] - ($height * $bias)) / 2);
                 break;
 
             case 'bottom':
-                $y = $y + ($options['height'] - ($height * count($lines)));
+                $y = $y + ($options['height'] - ($height * $bias));
                 break;
+
+            case 'justify':
+                $y = $y + ($options['height'] - $height * $bias) / ($bias - 1) * $index;
         }
 
         return array($x, $y, $width, $height);
@@ -1100,10 +1148,10 @@ class PosterEditor
     /**
      * Find image center usin from and to values.
      *
-     * @param integer $from Source size.
-     * @param integer $to   Destination size.
+     * @param int $from Source size.
+     * @param int $to   Destination size.
      *
-     * @return integer
+     * @return int
      */
     protected function findCenter($from, $to)
     {
@@ -1113,9 +1161,9 @@ class PosterEditor
     /**
      * Calculate new width and height values for resize.
      *
-     * @param integer $width  Current image width.
-     * @param integer $height Current image height.
-     * @param float   $ratio  Width to height relation.
+     * @param int   $width  Current image width.
+     * @param int   $height Current image height.
+     * @param float $ratio  Width to height relation.
      *
      * @return array
      */
