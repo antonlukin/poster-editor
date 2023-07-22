@@ -221,7 +221,7 @@ Draw text on image. Possible options:
 - **opacity**: Text opacity from 0 to 100.
 - **horizontal**: Horizontal alignment. Can be left/right/center/justify.
 - **vertical**: Vertical alginment. Can be top/center/bottom/justify.
-- **fontpath**: Path to .ttf font file.
+- **fontpath**: Path to .ttf or .otf font file.
 - **debug**: Draws text box rectangle if true.
 
 Use boundary to get actual dimensions of the drawn text box. See detailed examples below.

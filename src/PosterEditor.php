@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.8
+  * @version  Release: 5.9
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -207,8 +207,8 @@ class PosterEditor
     /**
      * Sends HTTP response with current image in given format and quality.
 
-     * @param string  $format  Optional. File image extension. By default used type from make or insert function.
-     * @param int $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
+     * @param string $format  Optional. File image extension. By default used type from make or insert function.
+     * @param int    $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
      *
      * @return void
      */
@@ -244,7 +244,7 @@ class PosterEditor
     /**
      * Save the image.
      *
-     * @param string  $path    Path to the file where to write the image data.
+     * @param string $path    Path to the file where to write the image data.
      * @param int    $quality Optional. Define optionally the quality of the image. From 0 to 100. Default: 90.
      * @param string $format  Optional. File image extension. By default use from path.
      *
@@ -385,9 +385,9 @@ class PosterEditor
      * Cut out a rectangular part of the current image with given width and height.
      * Define optional x,y coordinates to move the top-left corner of the cutout to a certain position.
      *
-     * @param int $width   Width of the rectangular cutout.
-     * @param int $height  Height of the rectangular cutout.
-     * @param array   $options Optional. List of crop coords. By default crop from center.
+     * @param int   $width   Width of the rectangular cutout.
+     * @param int   $height  Height of the rectangular cutout.
+     * @param array $options Optional. List of crop coords. By default crop from center.
      *
      * @return $this
      */
@@ -415,9 +415,9 @@ class PosterEditor
      * The method will find the best fitting aspect ratio on the current image automatically,
      * cut it out and resize it to the given dimension.
      *
-     * @param int $width    Target image width.
-     * @param int $height   Target image height.
-     * @param string  $position Optional. Crop position.
+     * @param int    $width    Target image width.
+     * @param int    $height   Target image height.
+     * @param string $position Optional. Crop position.
      *
      * @return $this
      */
@@ -479,11 +479,11 @@ class PosterEditor
     /**
      * Draw a line from x,y point 1 to x,y point 2 on current image.
      *
-     * @param int $x1      X-Coordinate of the starting point.
-     * @param int $y1      Y-Coordinate of the starting point.
-     * @param int $x2      X-Coordinate of the end point.
-     * @param int $y2      Y-Coordinate of the end point.
-     * @param array   $options Optional. List of line options.
+     * @param int   $x1      X-Coordinate of the starting point.
+     * @param int   $y1      Y-Coordinate of the starting point.
+     * @param int   $x2      X-Coordinate of the end point.
+     * @param int   $y2      Y-Coordinate of the end point.
+     * @param array $options Optional. List of line options.
      *
      * @return $this
      */
@@ -513,11 +513,11 @@ class PosterEditor
     /**
      * Draw a colored rectangle on current image.
      *
-     * @param int $x       X-Coordinate of the starting point.
-     * @param int $y       Y-Coordinate of the starting point.
-     * @param int $width   Width in pixels.
-     * @param int $height  Height in pixels.
-     * @param array   $options Optional. List of line options.
+     * @param int   $x       X-Coordinate of the starting point.
+     * @param int   $y       Y-Coordinate of the starting point.
+     * @param int   $width   Width in pixels.
+     * @param int   $height  Height in pixels.
+     * @param array $options Optional. List of line options.
      *
      * @return $this
      */
@@ -551,11 +551,11 @@ class PosterEditor
     /**
      * Draw an ellipse.
      *
-     * @param int $x       X-Coordinate of the center point.
-     * @param int $y       Y-Coordinate of the center point.
-     * @param int $width   Width in pixels.
-     * @param int $height  Height in pixels.
-     * @param array   $options Optional. List of line options.
+     * @param int   $x       X-Coordinate of the center point.
+     * @param int   $y       Y-Coordinate of the center point.
+     * @param int   $width   Width in pixels.
+     * @param int   $height  Height in pixels.
+     * @param array $options Optional. List of line options.
      *
      * @return $this
      */
@@ -771,7 +771,7 @@ class PosterEditor
         $text = $this->wrapText($text, $options);
 
         // Get text lines as array.
-        $lines = explode("\n", $text);
+        $lines = explode(PHP_EOL, $text);
 
         // Set default boundary vaules.
         $boundary = array_merge(array('width' => 0, 'height' => 0));
@@ -798,22 +798,23 @@ class PosterEditor
      * Draw single text line on image.
      * For justify horizontal alignment split the string word by word and add calclated extraspace.
      *
-     * @param string $line     Single text line
-     * @param array  $options  List of text settings.
-     * @param int    $width    Actual strin length.
-     * @param int    $x        X-Coordinate of string starting point.
-     * @param int    $y        Y-Coordinate of string starting point.
-     * @param int    $color    Text color.
-     * @param bool   $last     Is this string is last in the text.
+     * @param string $line    Single text line
+     * @param array  $options List of text settings.
+     * @param int    $width   Actual strin length.
+     * @param int    $x       X-Coordinate of string starting point.
+     * @param int    $y       Y-Coordinate of string starting point.
+     * @param int    $color   Text color.
+     * @param bool   $last    Is this string is last in the text.
      *
      * @return $this
      */
-    protected function drawLine($line, $options, $width, $x, $y, $color, $last) {
-        if ('justify' !== $options['horizontal']) {
+    protected function drawLine($line, $options, $width, $x, $y, $color, $last)
+    {
+        if ($options['horizontal'] !== 'justify') {
             return imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $line);
         }
 
-        $words = explode(' ', $line);
+        $words = $this->getWords($line);
 
         // Calc extraspace for justify alignment
         $extraspace = $options['fontsize'] / 50;
@@ -824,7 +825,7 @@ class PosterEditor
 
         foreach ($words as $index => $word) {
             if (count($words) > $index + 1) {
-                $word = $word . ' ';
+                $word = $this->removeExtraSpace($word . ' ');
             }
 
             $sizes = imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $word);
@@ -848,7 +849,7 @@ class PosterEditor
             $wrapped = $this->addBreaklines($text, $options);
 
             // Get lines from wrapped text.
-            $lines = explode("\n", $wrapped);
+            $lines = explode(PHP_EOL, $wrapped);
 
             // Get text width.
             $width = $this->getTextWidth($wrapped, $options);
@@ -895,10 +896,10 @@ class PosterEditor
         $line = '';
 
         // Split text to words.
-        $words = explode(' ', $text);
+        $words = $this->getWords($text);
 
         foreach ($words as $word) {
-            $sentence = $line . ' ' . $word;
+            $sentence = $this->removeExtraSpace($line . ' ' . $word);
 
             if (empty($line)) {
                 $sentence = $word;
@@ -908,7 +909,7 @@ class PosterEditor
 
             // Add new line to output.
             if ($box[2] > $options['width']) {
-                $output = $output . $line . "\n";
+                $output = $output . $line . PHP_EOL;
 
                 // Reset line.
                 $line = $word;
@@ -1235,6 +1236,30 @@ class PosterEditor
         imagedestroy($source);
 
         return $this;
+    }
+
+    /**
+     * Helper function to explode string by words
+     *
+     * @param string $string Text string to split to words by space.
+     *
+     * @return string
+     */
+    protected function getWords($string)
+    {
+        return explode(' ', preg_replace('/([，。？！])/us', '$1 ', $string));
+    }
+
+    /**
+     * Helper function to remove extraspace added by getWords method
+     *
+     * @param string $string Text string to remove extraspaces.
+     *
+     * @return string
+     */
+    protected function removeExtraSpace($string)
+    {
+        return preg_replace('/([，。？！]) /us', '$1', $string);
     }
 
     /**
