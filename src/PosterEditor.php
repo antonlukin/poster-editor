@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.9
+  * @version  Release: 5.10
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -945,7 +945,7 @@ class PosterEditor
             );
         }
 
-        $opacity = $options['opacity'] / 100 * 127;
+        $opacity = intval($options['opacity'] / 100 * 127);
 
         // Create image color width opacity.
         return imagecolorallocatealpha($this->resource, $rgb[0], $rgb[1], $rgb[2], $opacity);
@@ -1018,7 +1018,7 @@ class PosterEditor
                 $y = $y + ($options['height'] - $height * $bias) / ($bias - 1) * $index;
         }
 
-        return array($x, $y, $width, $height);
+        return array_map('intval', array($x, $y, $width, $height));
     }
 
     /**
