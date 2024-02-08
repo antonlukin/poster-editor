@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.10
+  * @version  Release: 5.11
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -1138,6 +1138,7 @@ class PosterEditor
 
             case IMAGETYPE_WEBP:
                 $source = imagecreatefromwebp($file);
+                break;
 
             default:
                 return $this->handleError('Unsupported image type');
