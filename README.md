@@ -330,7 +330,7 @@ $image->text(
     'This text appears right after title using smart boundaries',
     array(
         'x'          => 50,
-        'y'          => 100 + $boundary['height'],
+        'y'          => $boundary['y'] + $boundary['height'],
         'width'      => 800,
         'fontpath'   => '/fonts/opensans.ttf',
         'fontsize'   => 20,

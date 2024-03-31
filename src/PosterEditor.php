@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.11
+  * @version  Release: 5.12
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -774,7 +774,14 @@ class PosterEditor
         $lines = explode(PHP_EOL, $text);
 
         // Set default boundary vaules.
-        $boundary = array_merge(array('width' => 0, 'height' => 0));
+        $boundary = array_merge(
+            array(
+                'x' => $options['x'],
+                'y' => $options['y'],
+                'width' => 0,
+                'height' => 0,
+            )
+        );
 
         foreach ($lines as $index => $line) {
             list($x, $y, $width, $height) = $this->getOffset($options, $lines, $index);
@@ -785,10 +792,8 @@ class PosterEditor
             // Draw single line
             $this->drawLine($line, $options, $width, $x, $y, $color, $last);
 
-            $boundary = array(
-                'width'  => max($width, $boundary['width']),
-                'height' => $boundary['height'] + $height,
-            );
+            $boundary['width'] = max($width, $boundary['width']);
+            $boundary['height'] = $boundary['height'] + $height;
         }
 
         return $this;
