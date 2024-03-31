@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.12
+  * @version  Release: 5.13
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -124,12 +124,13 @@ class PosterEditor
      *
      * Paste a given image source over the current image with an optional position.
      *
-     * @param string $data    Binary data or path to file or another class instance.
-     * @param array  $options List of x/y relative offset coords from top left corner. Default: centered.
+     * @param string $data     Binary data or path to file or another class instance.
+     * @param array  $options  List of x/y relative offset coords from top left corner. Default: centered.
+     * @param array  $boundary Optional. Actual dimensions of the drawn image.
      *
      * @return $this
      */
-    public function insert($data, $options = array())
+    public function insert($data, $options = array(), &$boundary = array())
     {
         $defaults = array(
             'x' => null,
@@ -157,6 +158,13 @@ class PosterEditor
 
         imagecopyresampled($this->resource, $source, $options['x'], $options['y'], 0, 0, $width, $height, $width, $height);
         imagedestroy($source);
+
+        $boundary = array(
+            'x' => $options['x'],
+            'y' => $options['y'],
+            'width' => $width,
+            'height' => $height,
+        );
 
         return $this;
     }
@@ -774,13 +782,11 @@ class PosterEditor
         $lines = explode(PHP_EOL, $text);
 
         // Set default boundary vaules.
-        $boundary = array_merge(
-            array(
-                'x' => $options['x'],
-                'y' => $options['y'],
-                'width' => 0,
-                'height' => 0,
-            )
+        $boundary = array(
+            'x' => $options['x'],
+            'y' => $options['y'],
+            'width' => 0,
+            'height' => 0,
         );
 
         foreach ($lines as $index => $line) {
