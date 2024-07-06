@@ -30,7 +30,7 @@ try {
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#ffffff',
-            'opacity'    => 1,
+            'opacity'    => 0,
             'debug'      => true,
         )
     );

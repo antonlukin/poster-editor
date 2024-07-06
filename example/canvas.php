@@ -18,7 +18,7 @@ try {
     $image->canvas(
         500, 500,
         array(
-            'color' => '#cccc00'
+            'color' => '#cccc00',
         )
     );
 

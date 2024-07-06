@@ -64,7 +64,8 @@ $image->insert(mixed $data, array $options = array())
 ```
 Paste a given image source over the current image with an optional position. 
 First param can be binary data or path to file or another class instance.
-Options is an array of x/y relative offset coords from top left corner. By default image will be centered.
+Options is an array of x/y relative offset coords from top left corner and opacity from 0 to 100, where 0 is no transparency. 
+By default image will be centered.
 
 ### canvas
 ```
@@ -218,7 +219,7 @@ Draw text on image. Possible options:
 - **fontsize**: Maximum font size. Will be scaled down if the text doesn't fit box.
 - **color**: Color of text. Can be rgb-array or '#ffffff' format.
 - **lineheight**: Line height of text.
-- **opacity**: Text opacity from 0 to 100.
+- **opacity**: Text opacity from 0 to 100. Where 0 is no transparency.
 - **horizontal**: Horizontal alignment. Can be left/right/center/justify.
 - **vertical**: Vertical alginment. Can be top/center/bottom/justify.
 - **fontpath**: Path to .ttf or .otf font file.
@@ -260,7 +261,7 @@ $image->text(
         'fontsize'   => 24,
         'lineheight' => 1.75,
         'color'      => '#ffffff',
-        'opacity'    => 1,
+        'opacity'    => 0,
         'debug'      => true,
     )
 );
@@ -289,7 +290,7 @@ $image->text(
         'fontsize'   => 20,
         'lineheight' => 1.5,
         'color'      => '#ffffff',
-        'opacity'    => 1,
+        'opacity'    => 0,
         'debug'      => true,
     )
 );

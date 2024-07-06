@@ -36,7 +36,7 @@ try {
             'lineheight' => 1.75,
             'fontsize'   => 18,
             'color'      => '#ffffff',
-            'opacity'    => 1,
+            'opacity'    => 0,
         )
     );
 

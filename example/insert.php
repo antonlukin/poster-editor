@@ -20,7 +20,7 @@ try {
     $image->insert(
         'images/logo.png',
         array(
-            'width'  => 500,
+            'width' => 500,
         )
     );
 

@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.13
+  * @version  Release: 5.14
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -125,7 +125,7 @@ class PosterEditor
      * Paste a given image source over the current image with an optional position.
      *
      * @param string $data     Binary data or path to file or another class instance.
-     * @param array  $options  List of x/y relative offset coords from top left corner. Default: centered.
+     * @param array  $options  List of x/y relative offset coords from top left corner and opacity from 0 to 100. Default: centered.
      * @param array  $boundary Optional. Actual dimensions of the drawn image.
      *
      * @return $this
@@ -135,6 +135,7 @@ class PosterEditor
         $defaults = array(
             'x' => null,
             'y' => null,
+            'opacity' => 0,
         );
 
         $options = array_merge($defaults, $options);
@@ -154,9 +155,13 @@ class PosterEditor
 
         list($width, $height, $type, $source) = $image;
 
+        // We need to reverse opacity format for imagecopymergeAlpha function.
+        $opacity = 100 - $options['opacity'];
+
         $options = $this->calcPosition($options, $width, $height);
 
-        imagecopyresampled($this->resource, $source, $options['x'], $options['y'], 0, 0, $width, $height, $width, $height);
+        $this->imagecopymergeAlpha($this->resource, $source, $options['x'], $options['y'], 0, 0, $width, $height, $opacity);
+
         imagedestroy($source);
 
         $boundary = array(
@@ -182,7 +187,7 @@ class PosterEditor
     {
         $defaults = array(
             'color'   => array(0, 0, 0),
-            'opacity' => 100,
+            'opacity' => 0,
         );
 
         $options = array_merge($defaults, $options);
@@ -744,7 +749,7 @@ class PosterEditor
             'fontsize'   => 48,
             'color'      => array(0, 0, 0),
             'lineheight' => 1.5,
-            'opacity'    => 1,
+            'opacity'    => 0,
             'horizontal' => 'left',
             'vertical'   => 'top',
             'fontpath'   => null,
@@ -800,6 +805,13 @@ class PosterEditor
 
             $boundary['width'] = max($width, $boundary['width']);
             $boundary['height'] = $boundary['height'] + $height;
+
+            if ($index < 1) {
+                $boundary['y'] = $y - $height;
+                $boundary['x'] = $x;
+            }
+
+            $boundary['x'] = min($x, $boundary['x']);
         }
 
         return $this;
@@ -1248,6 +1260,30 @@ class PosterEditor
         imagedestroy($source);
 
         return $this;
+    }
+
+    /**
+     * Helper function to merge image with alpha.
+     *
+     * @param resource $resource Destination image resource.
+     * @param resource $source   Source image resource.
+     * @param int      $dx       X-coordinate of destination point.
+     * @param int      $dy       Y-coordinate of destination point.
+     * @param int      $sx       X-coordinate of source point.
+     * @param int      $sy       Y-coordinate of source point.
+     * @param int      $sw       Source width.
+     * @param int      $sh       Source height.
+     * @param int      $pct      Alpha transparency.
+     *
+     * @return void
+     */
+    public function imagecopymergeAlpha($resource, $source, $dx, $dy, $sx, $sy, $sw, $sh, $pct)
+    {
+        $cut = imagecreatetruecolor($sw, $sh);
+
+        imagecopy($cut, $resource, 0, 0, $dx, $dy, $sw, $sh);
+        imagecopy($cut, $source, 0, 0, $sx, $sy, $sw, $sh);
+        imagecopymerge($resource, $cut, $dx, $dy, 0, 0, $sw, $sh, $pct);
     }
 
     /**
