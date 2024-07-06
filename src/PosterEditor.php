@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.14
+  * @version  Release: 5.15
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -155,12 +155,12 @@ class PosterEditor
 
         list($width, $height, $type, $source) = $image;
 
-        // We need to reverse opacity format for imagecopymergeAlpha function.
+        // We need to reverse opacity format for copyMergeAlpha function.
         $opacity = 100 - $options['opacity'];
 
         $options = $this->calcPosition($options, $width, $height);
 
-        $this->imagecopymergeAlpha($this->resource, $source, $options['x'], $options['y'], 0, 0, $width, $height, $opacity);
+        $this->copyMergeAlpha($this->resource, $source, $options['x'], $options['y'], 0, 0, $width, $height, $opacity);
 
         imagedestroy($source);
 
@@ -1254,7 +1254,7 @@ class PosterEditor
      */
     protected function copyResampled($source, $dx, $dy, $sx, $sy, $dw, $dh, $sw, $sh)
     {
-        $this->canvas($dw, $dh);
+        $this->canvas($dw, $dh, array('opacity' => 100));
 
         imagecopyresampled($this->resource, $source, $dx, $dy, $sx, $sy, $dw, $dh, $sw, $sh);
         imagedestroy($source);
@@ -1277,7 +1277,7 @@ class PosterEditor
      *
      * @return void
      */
-    public function imagecopymergeAlpha($resource, $source, $dx, $dy, $sx, $sy, $sw, $sh, $pct)
+    public function copyMergeAlpha($resource, $source, $dx, $dy, $sx, $sy, $sw, $sh, $pct)
     {
         $cut = imagecreatetruecolor($sw, $sh);
 

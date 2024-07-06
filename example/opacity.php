@@ -21,7 +21,6 @@ try {
         array(
             'x' => 600,
             'y' => 0,
-            'height' => 100,
             'opacity' => 0,
         )
     );
@@ -31,7 +30,6 @@ try {
         array(
             'x' => 600,
             'y' => 120,
-            'height' => 100,
             'opacity' => 40,
         )
     );
@@ -41,7 +39,6 @@ try {
         array(
             'x' => 600,
             'y' => 240,
-            'height' => 100,
             'opacity' => 80,
         )
     );
@@ -88,7 +85,7 @@ try {
         )
     );
 
-    $image->show();
+    $image->show('png');
 
 } catch(Exception $e) {
     echo $e->getMessage();

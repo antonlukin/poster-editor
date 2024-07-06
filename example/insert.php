@@ -16,13 +16,7 @@ try {
     $image = new PosterEditor\PosterEditor();
     $image->make('images/bridge.jpg')->fit(1000, 600, 'bottom-left');
     $image->grayscale()->invert();
-
-    $image->insert(
-        'images/logo.png',
-        array(
-            'width' => 500,
-        )
-    );
+    $image->insert('images/logo.png');
 
     $image->show();
 
