@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.15
+  * @version  Release: 5.16
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
@@ -654,11 +654,11 @@ class PosterEditor
         $height = $this->height;
 
         // Scale by 25% and apply Gaussian blur.
-        $this->resize($width / 4, $height / 4);
+        $this->resize(intval($width / 4), intval($height / 4));
         imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
 
         // Scale result by 200% and blur again.
-        $this->resize($width / 2, $height / 2);
+        $this->resize(intval($width / 2), intval($height / 2));
         imagefilter($this->resource, IMG_FILTER_GAUSSIAN_BLUR);
 
         // Scale result back to original size and blur one more time.
