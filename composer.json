@@ -17,7 +17,8 @@
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-		"phpcompatibility/php-compatibility": "^9.3"
+		"phpcompatibility/php-compatibility": "^9.3",
+		"phpunit/phpunit": "^9.5"
 	},
 	"suggest": {
 		"ext-gd": "to use GD library based image processing."
