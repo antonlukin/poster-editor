@@ -17,7 +17,7 @@ try {
     $image->canvas(500, 500, array('color' => '#fff'));
 
     $image->insert(
-        'images/icon.png',
+        '../assets/images/icon.png',
         array(
             'y' => 50,
             'opacity' => 0,
@@ -25,7 +25,7 @@ try {
     );
 
     $image->insert(
-        file_get_contents('images/icon.png'),
+        file_get_contents('../assets/images/icon.png'),
         array(
             'y' => 200,
             'opacity' => 40,
@@ -33,7 +33,7 @@ try {
     );
 
     $icon = new PosterEditor\PosterEditor();
-    $icon->make(file_get_contents('images/icon.png'));
+    $icon->make(file_get_contents('../assets/images/icon.png'));
 
     $image->insert(
         $icon,

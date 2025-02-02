@@ -35,7 +35,7 @@ class AlphaImageTest extends TestCase
         $image->canvas(500, 500, array('color' => '#fff'));
 
         $image->insert(
-            __DIR__ . '/images/icon.png',
+            ASSET_PATH . '/images/icon.png',
             array(
             'y' => 50,
             'opacity' => 0,
@@ -43,7 +43,7 @@ class AlphaImageTest extends TestCase
         );
 
         $image->insert(
-            file_get_contents(__DIR__ . '/images/icon.png'),
+            file_get_contents(ASSET_PATH . '/images/icon.png'),
             array(
             'y' => 200,
             'opacity' => 40,
@@ -51,7 +51,7 @@ class AlphaImageTest extends TestCase
         );
 
         $icon = new PosterEditor();
-        $icon->make(file_get_contents(__DIR__ . '/images/icon.png'));
+        $icon->make(file_get_contents(ASSET_PATH . '/images/icon.png'));
 
         $image->insert(
             $icon,

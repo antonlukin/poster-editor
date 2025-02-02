@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->crop(
+    $image->make(__DIR__ . '/../tests/images/bridge.jpg')->crop(
         900, 600,
         array(
             'x' => '0',
@@ -32,7 +32,7 @@ try {
             'width'      => 860,
             'horizontal' => 'start',
             'vertical'   => 'center',
-            'fontpath'   => 'fonts/notosans-tc-regular.otf',
+            'fontpath'   => __DIR__ . '/../tests/fonts/notosans-tc-regular.otf',
             'lineheight' => 1.75,
             'fontsize'   => 18,
             'color'      => '#ffffff',
