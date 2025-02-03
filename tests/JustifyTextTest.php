@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests the functionality of adding text with boundaries on an image.
+ * Tests the functionality of justifying text.
  * php version 7.3
  *
  * @category Tests
@@ -13,7 +13,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the functionality of adding text with boundaries on an image.
+ * Tests the functionality of justifying text.
  * php version 7.3
  *
  * @category Tests
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
  */
-class BoundaryImageTest extends TestCase
+class JustifyTextTest extends TestCase
 {
     /**
      * Save and compare rendered image
@@ -32,40 +32,28 @@ class BoundaryImageTest extends TestCase
     public function testRendring()
     {
         $image = new PosterEditor\PosterEditor();
-        $image->make(ASSET_PATH . '/images/bridge.jpg')->crop(900, 600, ['x' => 0, 'y' => 100]);
-
-        $image->grayscale()->brightness(-40);
+        $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(900, 600);
+        $image->blackout(70);
 
         $image->text(
-            'Large title with unknown size. Can be multi-line',
+        'Lorem ipsum dolor d d 4 g sit amet, consectetur adipiscing et, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex eas commodo consequat sdfsdfl', // phpcs:ignore
             array(
-                'x'          => 50,
+                'x'          => 100,
                 'y'          => 100,
-                'width'      => 800,
-                'fontpath'   => ASSET_PATH . '/fonts/merriweather.ttf',
-                'fontsize'   => 48,
-                'lineheight' => 1.5,
-                'color'      => '#9999ff',
-            ),
-            $boundary
-        );
-
-        $image->text(
-            'This text appears right after title using smart boundaries',
-            array(
-                'x'          => 50,
-                'y'          => $boundary['y'] + $boundary['height'],
-                'width'      => 800,
+                'width'      => 600,                   // Calculate width for nulled values
+                'height'     => 300,                   // Calculate height for nulled values
+                'horizontal' => 'justify',             // Can be left/right/center/justify
+                'vertical'   => 'justify',             // Can be top/center/bottom/justify
                 'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
                 'fontsize'   => 20,
                 'lineheight' => 1.5,
-                'color'      => '#ff9999',
-            ),
-            $boundary
+                'color'      => '#ffffff',
+                'opacity'    => 0,
+            )
         );
 
-        $generatedPath = __DIR__ . '/output/boundary.jpg';
-        $referencePath = __DIR__ . '/references/boundary.jpg';
+        $generatedPath = __DIR__ . '/output/justify.png';
+        $referencePath = __DIR__ . '/references/justify.png';
 
         $image->save($generatedPath);
 

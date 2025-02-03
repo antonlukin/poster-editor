@@ -12,9 +12,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/bridge.jpg')->crop(
+    $image->make(ASSET_PATH . '/images/bridge.jpg')->crop(
         900, 600,
         array(
             'x' => '0',
@@ -30,7 +34,7 @@ try {
             'x'          => 50,
             'y'          => 100,
             'width'      => 800,
-            'fontpath'   => '../assets/fonts/merriweather.ttf',
+            'fontpath'   => ASSET_PATH . '/fonts/merriweather.ttf',
             'fontsize'   => 48,
             'lineheight' => 1.5,
             'color'      => '#9999ff',
@@ -42,9 +46,9 @@ try {
         'This text appears right after title using smart boundaries',
         array(
             'x'          => 50,
-            'y'          => $boundary['y'] + $boundary['height'],
+            'y'          => 100 + $boundary['height'],
             'width'      => 800,
-            'fontpath'   => '../assets/fonts/opensans.ttf',
+            'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#ff9999',

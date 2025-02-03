@@ -12,12 +12,16 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
     $image->canvas(1000, 400);
 
     $image->insert(
-        '../assets/images/logo.png',
+        ASSET_PATH . '/images/logo.png',
         array(
             'x' => 600,
             'y' => 0,
@@ -26,7 +30,7 @@ try {
     );
 
     $image->insert(
-        '../assets/images/logo.png',
+        ASSET_PATH . '/images/logo.png',
         array(
             'x' => 600,
             'y' => 120,
@@ -35,7 +39,7 @@ try {
     );
 
     $image->insert(
-        '../assets/images/logo.png',
+        ASSET_PATH . '/images/logo.png',
         array(
             'x' => 600,
             'y' => 240,
@@ -49,7 +53,7 @@ try {
             'x'          => 0,
             'y'          => 0,
             'width'      => 600,
-            'fontpath'   => '../assets/fonts/opensans.ttf',
+            'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#fff',
@@ -63,7 +67,7 @@ try {
             'x'          => 0,
             'y'          => 120,
             'width'      => 600,
-            'fontpath'   => '../assets/fonts/opensans.ttf',
+            'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#fff',
@@ -77,7 +81,7 @@ try {
             'x'          => 0,
             'y'          => 240,
             'width'      => 600,
-            'fontpath'   => '../assets/fonts/opensans.ttf',
+            'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#fff',

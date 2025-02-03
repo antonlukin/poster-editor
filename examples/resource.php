@@ -12,9 +12,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/bridge.jpg')->fit(600, 600);
+    $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(600, 600);
 
     $resource = $image->get();
     imagefilter($resource, IMG_FILTER_COLORIZE, 0, 200, 0);

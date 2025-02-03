@@ -12,12 +12,16 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
     $image->canvas(500, 500, array('color' => '#fff'));
 
     $image->insert(
-        '../assets/images/icon.png',
+        ASSET_PATH. '/images/icon.png',
         array(
             'y' => 50,
             'opacity' => 0,
@@ -25,7 +29,7 @@ try {
     );
 
     $image->insert(
-        file_get_contents('../assets/images/icon.png'),
+        file_get_contents(ASSET_PATH . '/images/icon.png'),
         array(
             'y' => 200,
             'opacity' => 40,
@@ -33,7 +37,7 @@ try {
     );
 
     $icon = new PosterEditor\PosterEditor();
-    $icon->make(file_get_contents('../assets/images/icon.png'));
+    $icon->make(file_get_contents(ASSET_PATH . '/images/icon.png'));
 
     $image->insert(
         $icon,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests the functionality of creating canvas.
+ * Tests long text without spaces.
  * php version 7.3
  *
  * @category Tests
@@ -13,7 +13,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the functionality of creating canvas.
+ * Tests long text without spaces.
  * php version 7.3
  *
  * @category Tests
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
  */
-class CanvasTest extends TestCase
+class NoSpaceText extends TestCase
 {
     /**
      * Save and compare rendered image
@@ -33,15 +33,27 @@ class CanvasTest extends TestCase
     {
         $image = new PosterEditor\PosterEditor();
 
-        $image->canvas(
-            500, 500,
+        $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(600, 600);
+        $image->grayscale()->brightness(-40);
+
+        $image->text(
+            '123456789012345678901234567890123456789012345678901234567890123456789012345', // phpcs:ignore
             array(
-                'color' => '#cccc00',
+                'x'          => 100,
+                'y'          => 100,
+                'width'      => 400,
+                'height'     => 200,
+                'horizontal' => 'left',
+                'vertical'   => 'top',
+                'fontpath'   => ASSET_PATH . '/fonts/merriweather.ttf',
+                'fontsize'   => 24,
+                'lineheight' => 1.75,
+                'color'      => '#ffffff',
             )
         );
 
-        $generatedPath = __DIR__ . '/output/canvas.png';
-        $referencePath = __DIR__ . '/references/canvas.png';
+        $generatedPath = __DIR__ . '/output/nospace.png';
+        $referencePath = __DIR__ . '/references/nospace.png';
 
         $image->save($generatedPath);
 

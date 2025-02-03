@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests the functionality of creating canvas.
+ * Tests WebP format supporting.
  * php version 7.3
  *
  * @category Tests
@@ -13,7 +13,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the functionality of creating canvas.
+ * Tests Webp format supporting.
  * php version 7.3
  *
  * @category Tests
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
  */
-class CanvasTest extends TestCase
+class WebPSupportTest extends TestCase
 {
     /**
      * Save and compare rendered image
@@ -32,18 +32,12 @@ class CanvasTest extends TestCase
     public function testRendring()
     {
         $image = new PosterEditor\PosterEditor();
+        $image->make(ASSET_PATH . '/images/belgrade.webp')->upsize(1000, null);
 
-        $image->canvas(
-            500, 500,
-            array(
-                'color' => '#cccc00',
-            )
-        );
+        $generatedPath = __DIR__ . '/output/webp.webp';
+        $referencePath = __DIR__ . '/references/webp.webp';
 
-        $generatedPath = __DIR__ . '/output/canvas.png';
-        $referencePath = __DIR__ . '/references/canvas.png';
-
-        $image->save($generatedPath);
+        $image->save($generatedPath, 85);
 
         // Compare file checksums
         $generatedHash = md5_file($generatedPath);

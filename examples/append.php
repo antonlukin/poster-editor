@@ -12,12 +12,16 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/bridge.jpg')->fit(1200, 630, 'bottom')->blackout(50);
+    $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(1200, 630, 'bottom')->blackout(50);
 
     $logo = new PosterEditor\PosterEditor();
-    $logo->make('../assets/images/logo.png')->downsize(150, null);
+    $logo->make(ASSET_PATH . '/images/logo.png')->downsize(150, null);
 
     $image->insert($logo, array('x' => 50, 'y' => 50));
     $image->show();

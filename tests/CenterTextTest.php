@@ -11,7 +11,6 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use PosterEditor\PosterEditor;
 
 /**
  * Tests the functionality of centering text.
@@ -32,7 +31,7 @@ class CenterTextTest extends TestCase
      */
     public function testRendring()
     {
-        $image = new PosterEditor();
+        $image = new PosterEditor\PosterEditor();
         $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(1200, 630);
         $image->grayscale()->brightness(-40);
 

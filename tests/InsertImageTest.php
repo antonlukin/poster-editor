@@ -11,7 +11,6 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use PosterEditor\PosterEditor;
 
 /**
  * Tests image inserting.
@@ -32,7 +31,7 @@ class InsertImageTest extends TestCase
      */
     public function testRendring()
     {
-        $image = new PosterEditor();
+        $image = new PosterEditor\PosterEditor();
         $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(1000, 600, 'bottom-left');
         $image->grayscale()->invert();
         $image->insert(ASSET_PATH . '/images/logo.png');

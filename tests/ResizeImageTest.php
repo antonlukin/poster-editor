@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests the functionality of creating canvas.
+ * Tests image resizing.
  * php version 7.3
  *
  * @category Tests
@@ -13,7 +13,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the functionality of creating canvas.
+ * Tests image resizing.
  * php version 7.3
  *
  * @category Tests
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
  */
-class CanvasTest extends TestCase
+class ResizeImageTest extends TestCase
 {
     /**
      * Save and compare rendered image
@@ -32,16 +32,10 @@ class CanvasTest extends TestCase
     public function testRendring()
     {
         $image = new PosterEditor\PosterEditor();
+        $image->make(ASSET_PATH . '/images/bridge.jpg')->resize(300, 600);
 
-        $image->canvas(
-            500, 500,
-            array(
-                'color' => '#cccc00',
-            )
-        );
-
-        $generatedPath = __DIR__ . '/output/canvas.png';
-        $referencePath = __DIR__ . '/references/canvas.png';
+        $generatedPath = __DIR__ . '/output/resize.jpg';
+        $referencePath = __DIR__ . '/references/resize.jpg';
 
         $image->save($generatedPath);
 

@@ -11,7 +11,6 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use PosterEditor\PosterEditor;
 
 /**
  * Test opacity images overlay
@@ -31,7 +30,7 @@ class AlphaImageTest extends TestCase
      */
     public function testRendring()
     {
-        $image = new PosterEditor();
+        $image = new PosterEditor\PosterEditor();
         $image->canvas(500, 500, array('color' => '#fff'));
 
         $image->insert(
@@ -50,7 +49,7 @@ class AlphaImageTest extends TestCase
             )
         );
 
-        $icon = new PosterEditor();
+        $icon = new PosterEditor\PosterEditor();
         $icon->make(file_get_contents(ASSET_PATH . '/images/icon.png'));
 
         $image->insert(

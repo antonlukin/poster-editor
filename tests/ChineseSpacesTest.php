@@ -11,7 +11,6 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use PosterEditor\PosterEditor;
 
 /**
  * Tests chinese text with unusual spaces.
@@ -32,7 +31,7 @@ class ChineseSpacesTest extends TestCase
      */
     public function testRendring()
     {
-        $image = new PosterEditor();
+        $image = new PosterEditor\PosterEditor();
         $image->make(ASSET_PATH . '/images/bridge.jpg')->crop(
             900, 600,
             array(

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests the functionality of creating canvas.
+ * Tests making image from binary and path file.
  * php version 7.3
  *
  * @category Tests
@@ -13,7 +13,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests the functionality of creating canvas.
+ * Tests making image from binary and path file.
  * php version 7.3
  *
  * @category Tests
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
  */
-class CanvasTest extends TestCase
+class MakeTest extends TestCase
 {
     /**
      * Save and compare rendered image
@@ -32,16 +32,15 @@ class CanvasTest extends TestCase
     public function testRendring()
     {
         $image = new PosterEditor\PosterEditor();
+        $image->make(file_get_contents(ASSET_PATH . '/images/bridge.jpg'))->downsize(null, 1000)->invert();
 
-        $image->canvas(
-            500, 500,
-            array(
-                'color' => '#cccc00',
-            )
-        );
+        $logo = new PosterEditor\PosterEditor();
+        $logo->make(ASSET_PATH . '/images/logo.png')->downsize(null, 100)->invert();
 
-        $generatedPath = __DIR__ . '/output/canvas.png';
-        $referencePath = __DIR__ . '/references/canvas.png';
+        $image->insert($logo, array('y' => 0));
+
+        $generatedPath = __DIR__ . '/output/make.png';
+        $referencePath = __DIR__ . '/references/make.png';
 
         $image->save($generatedPath);
 

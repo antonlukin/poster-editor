@@ -12,9 +12,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/bridge.jpg')->fit(1200, 630);
+    $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(1200, 630);
     $image->grayscale()->brightness(-40);
 
     $image->text(
@@ -26,7 +30,7 @@ try {
             'height'     => 400,                  // Calculate height for nulled values
             'horizontal' => 'center',             // Can be left/right/center/justify
             'vertical'   => 'center',             // Can be top/center/bottom/justify
-            'fontpath'   => '../assets/fonts/opensans.ttf',
+            'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
             'fontsize'   => 24,
             'lineheight' => 1.75,
             'color'      => '#ffffff',

@@ -12,9 +12,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/bridge.jpg')->crop(
+    $image->make(ASSET_PATH . '/images/bridge.jpg')->crop(
         900, 600,
         array(
             'x' => '0',
@@ -32,7 +36,7 @@ try {
             'width'      => 860,
             'horizontal' => 'start',
             'vertical'   => 'center',
-            'fontpath'   => '../assets/fonts/notosans-tc-regular.otf',
+            'fontpath'   => ASSET_PATH . '/fonts/notosans-tc-regular.otf',
             'lineheight' => 1.75,
             'fontsize'   => 18,
             'color'      => '#ffffff',

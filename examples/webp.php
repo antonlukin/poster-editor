@@ -12,10 +12,14 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/belgrade.webp')->fit(1000, 400)->blackout(50);
-    $image->show();
+    $image->make(ASSET_PATH . '/images/belgrade.webp')->upsize(1000, null);
+    $image->show(null, 85);
 
 } catch(Exception $e) {
     echo $e->getMessage();

@@ -606,7 +606,7 @@ class PosterEditor
     {
         $level = $this->getParam($level, -100, 100);
 
-        imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, $level * 2.55);
+        imagefilter($this->resource, IMG_FILTER_BRIGHTNESS, intval($level * 2.55));
 
         return $this;
     }
@@ -854,7 +854,7 @@ class PosterEditor
             $sizes = imagefttext($this->resource, $options['fontsize'], 0, $x, $y, $color, $options['fontpath'], $word);
 
             // Update x-coord
-            $x = $x + abs($sizes[6] - $sizes[4]) + $extraspace;
+            $x = intval($x + abs($sizes[6] - $sizes[4]) + $extraspace);
         }
     }
 
@@ -1212,7 +1212,7 @@ class PosterEditor
             }
         }
 
-        return array($width, $height);
+        return array_map('intval', array($width, $height));
     }
 
     /**

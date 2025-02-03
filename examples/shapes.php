@@ -12,9 +12,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!defined('ASSET_PATH')) {
+    define('ASSET_PATH', __DIR__ . '/../assets');
+}
+
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('../assets/images/bridge.jpg')->fit(1000, 630, 'bottom');
+    $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(1000, 630, 'bottom');
     $image->contrast(5)->brightness(-30)->blur();
 
     $image->rectangle(

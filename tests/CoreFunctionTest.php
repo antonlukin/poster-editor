@@ -11,7 +11,6 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use PosterEditor\PosterEditor;
 
 /**
  * Tests core functionalities of the PosterEditor class.
@@ -31,8 +30,8 @@ class CoreFunctionTest extends TestCase
      */
     public function testCanBeInstantiated()
     {
-        $editor = new PosterEditor(800, 600);
-        $this->assertInstanceOf(PosterEditor::class, $editor);
+        $editor = new PosterEditor\PosterEditor();
+        $this->assertInstanceOf(PosterEditor\PosterEditor::class, $editor);
     }
 
     /**
@@ -42,10 +41,10 @@ class CoreFunctionTest extends TestCase
      */
     public function testCanvasCreation()
     {
-        $editor = new PosterEditor(800, 600);
+        $editor = new PosterEditor\PosterEditor();
         $editor->canvas(800, 600);
 
-        $this->assertInstanceOf(PosterEditor::class, $editor);
+        $this->assertInstanceOf(PosterEditor\PosterEditor::class, $editor);
         $this->assertEquals(800, $editor->width());
         $this->assertEquals(600, $editor->height());
     }
@@ -57,7 +56,7 @@ class CoreFunctionTest extends TestCase
      */
     public function testResizeAndCrop()
     {
-        $editor = new PosterEditor();
+        $editor = new PosterEditor\PosterEditor();
         $editor->canvas(800, 600);
         $editor->resize(400, 300);
 
@@ -76,7 +75,7 @@ class CoreFunctionTest extends TestCase
      */
     public function testSaveAndLoad()
     {
-        $editor = new PosterEditor();
+        $editor = new PosterEditor\PosterEditor();
         $editor->canvas(800, 600);
 
         $generatedPath = __DIR__ . '/output/saved.jpg';
@@ -84,7 +83,7 @@ class CoreFunctionTest extends TestCase
         $editor->save($generatedPath);
         $this->assertFileExists($generatedPath);
 
-        $loadedEditor = new PosterEditor();
+        $loadedEditor = new PosterEditor\PosterEditor();
         $loadedEditor->make($generatedPath);
 
         $this->assertEquals($editor->width(), $loadedEditor->width());

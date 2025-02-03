@@ -11,7 +11,6 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use PosterEditor\PosterEditor;
 
 /**
  * Tests the functionality of appending a logo to an image
@@ -31,12 +30,12 @@ class AppendImageTest extends TestCase
      */
     public function testRendring()
     {
-        $image = new PosterEditor();
+        $image = new PosterEditor\PosterEditor();
         $image->make(ASSET_PATH . '/images/bridge.jpg')
             ->fit(1200, 630, 'bottom')
             ->blackout(50);
 
-        $logo = new PosterEditor();
+        $logo = new PosterEditor\PosterEditor();
         $logo->make(ASSET_PATH . '/images/logo.png')->downsize(150, null);
 
         $image->insert($logo, array('x' => 50, 'y' => 50));
