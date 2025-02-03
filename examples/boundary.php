@@ -1,7 +1,7 @@
 <?php
 /**
  * Text boundary image example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->crop(
+    $image->make('../assets/images/bridge.jpg')->crop(
         900, 600,
         array(
             'x' => '0',
@@ -30,7 +30,7 @@ try {
             'x'          => 50,
             'y'          => 100,
             'width'      => 800,
-            'fontpath'   => 'fonts/merriweather.ttf',
+            'fontpath'   => '../assets/fonts/merriweather.ttf',
             'fontsize'   => 48,
             'lineheight' => 1.5,
             'color'      => '#9999ff',
@@ -44,7 +44,7 @@ try {
             'x'          => 50,
             'y'          => $boundary['y'] + $boundary['height'],
             'width'      => 800,
-            'fontpath'   => 'fonts/opensans.ttf',
+            'fontpath'   => '../assets/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#ff9999',

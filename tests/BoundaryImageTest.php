@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests the functionality of adding text with boundaries on an image.
- * php version 7.1
+ * php version 7.3
  *
  * @category Tests
  * @package  PosterEditorTest
@@ -15,10 +15,10 @@ use PosterEditor\PosterEditor;
 
 /**
  * Tests the functionality of adding text with boundaries on an image.
- * php version 7.1
+ * php version 7.3
  *
  * @category Tests
- * @package  BoundaryImageTest
+ * @package  PosterEditorTest
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
@@ -26,14 +26,14 @@ use PosterEditor\PosterEditor;
 class BoundaryImageTest extends TestCase
 {
     /**
-     * Tests adding multi-line text within boundaries and verifies the output matches the reference.
+     * Save and compare rendered image
      *
      * @return void
      */
-    public function testTextBoundaryRendering()
+    public function testRendring()
     {
         $image = new PosterEditor();
-        $image->make(__DIR__ . '/images/bridge.jpg')->crop(900, 600, ['x' => 0, 'y' => 100]);
+        $image->make(ASSET_PATH . '/images/bridge.jpg')->crop(900, 600, ['x' => 0, 'y' => 100]);
 
         $image->grayscale()->brightness(-40);
 
@@ -43,7 +43,7 @@ class BoundaryImageTest extends TestCase
                 'x'          => 50,
                 'y'          => 100,
                 'width'      => 800,
-                'fontpath'   => __DIR__ . '/fonts/merriweather.ttf',
+                'fontpath'   => ASSET_PATH . '/fonts/merriweather.ttf',
                 'fontsize'   => 48,
                 'lineheight' => 1.5,
                 'color'      => '#9999ff',
@@ -57,7 +57,7 @@ class BoundaryImageTest extends TestCase
                 'x'          => 50,
                 'y'          => $boundary['y'] + $boundary['height'],
                 'width'      => 800,
-                'fontpath'   => __DIR__ . '/fonts/opensans.ttf',
+                'fontpath'   => ASSET_PATH . '/fonts/opensans.ttf',
                 'fontsize'   => 20,
                 'lineheight' => 1.5,
                 'color'      => '#ff9999',

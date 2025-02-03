@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests the functionality of appending a logo to an image.
- * php version 7.1
+ * php version 7.3
  *
  * @category Tests
  * @package  PosterEditorTest
@@ -17,7 +17,7 @@ use PosterEditor\PosterEditor;
  * Tests the functionality of appending a logo to an image
  *
  * @category Tests
- * @package  AppendImageTest
+ * @package  PosterEditorTest
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
@@ -25,19 +25,19 @@ use PosterEditor\PosterEditor;
 class AppendImageTest extends TestCase
 {
     /**
-     * Tests inserting a logo onto an image and verifies the output matches the reference.
+     * Save and compare rendered image
      *
      * @return void
      */
-    public function testAppendLogoToImage()
+    public function testRendring()
     {
         $image = new PosterEditor();
-        $image->make(__DIR__ . '/images/bridge.jpg')
+        $image->make(ASSET_PATH . '/images/bridge.jpg')
             ->fit(1200, 630, 'bottom')
             ->blackout(50);
 
         $logo = new PosterEditor();
-        $logo->make(__DIR__ . '/images/logo.png')->downsize(150, null);
+        $logo->make(ASSET_PATH . '/images/logo.png')->downsize(150, null);
 
         $image->insert($logo, array('x' => 50, 'y' => 50));
 

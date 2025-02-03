@@ -1,7 +1,7 @@
 <?php
 /**
  * Insert image example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,9 +14,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->fit(1000, 600, 'bottom-left');
+    $image->make('../assets/images/bridge.jpg')->fit(1000, 600, 'bottom-left');
     $image->grayscale()->invert();
-    $image->insert('images/logo.png');
+    $image->insert('../assets/images/logo.png');
 
     $image->show();
 

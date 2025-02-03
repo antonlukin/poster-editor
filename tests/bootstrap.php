@@ -2,7 +2,7 @@
 /**
  * Bootstrap file for PHPUnit tests.
  * Defines common constants and autoloads necessary classes.
- * php version 7.1
+ * php version 7.3
  *
  * @category Configuration
  * @package  PosterEditorTest

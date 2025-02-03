@@ -1,7 +1,7 @@
 <?php
 /**
  * Opacity image and text support example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor

@@ -1,10 +1,10 @@
 <?php
 /**
- * Tests the functionality of image and text opacity.
+ * Tests image inserting.
  * php version 7.3
  *
  * @category Tests
- * @package  AlphaImageTest
+ * @package  PosterEditorTest
  * @author   Anton Lukin <anton@lukin.me>
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
@@ -14,7 +14,8 @@ use PHPUnit\Framework\TestCase;
 use PosterEditor\PosterEditor;
 
 /**
- * Test opacity images overlay
+ * Tests image inserting.
+ * php version 7.3
  *
  * @category Tests
  * @package  PosterEditorTest
@@ -22,7 +23,7 @@ use PosterEditor\PosterEditor;
  * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link     https://github.com/antonlukin/poster-editor
  */
-class AlphaImageTest extends TestCase
+class InsertImageTest extends TestCase
 {
     /**
      * Save and compare rendered image
@@ -32,37 +33,12 @@ class AlphaImageTest extends TestCase
     public function testRendring()
     {
         $image = new PosterEditor();
-        $image->canvas(500, 500, array('color' => '#fff'));
+        $image->make(ASSET_PATH . '/images/bridge.jpg')->fit(1000, 600, 'bottom-left');
+        $image->grayscale()->invert();
+        $image->insert(ASSET_PATH . '/images/logo.png');
 
-        $image->insert(
-            ASSET_PATH . '/images/icon.png',
-            array(
-            'y' => 50,
-            'opacity' => 0,
-            )
-        );
-
-        $image->insert(
-            file_get_contents(ASSET_PATH . '/images/icon.png'),
-            array(
-            'y' => 200,
-            'opacity' => 40,
-            )
-        );
-
-        $icon = new PosterEditor();
-        $icon->make(file_get_contents(ASSET_PATH . '/images/icon.png'));
-
-        $image->insert(
-            $icon,
-            array(
-            'y' => 350,
-            'opacity' => 80,
-            )
-        );
-
-        $generatedPath = __DIR__ . '/output/alpha.png';
-        $referencePath = __DIR__ . '/references/alpha.png';
+        $generatedPath = __DIR__ . '/output/insert.png';
+        $referencePath = __DIR__ . '/references/insert.png';
 
         $image->save($generatedPath);
 

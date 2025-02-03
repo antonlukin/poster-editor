@@ -2,7 +2,7 @@
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="PosterEditor Test Suite">
-            <directory>./tests/phpunit</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

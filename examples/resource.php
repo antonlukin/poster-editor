@@ -1,7 +1,7 @@
 <?php
 /**
  * Resource example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->fit(600, 600);
+    $image->make('../assets/images/bridge.jpg')->fit(600, 600);
 
     $resource = $image->get();
     imagefilter($resource, IMG_FILTER_COLORIZE, 0, 200, 0);

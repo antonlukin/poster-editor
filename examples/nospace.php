@@ -1,7 +1,7 @@
 <?php
 /**
  * Long text without spaces example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -16,7 +16,7 @@ try {
     $image = new PosterEditor\PosterEditor();
 
     // Create from image and fit 1200x630 area.
-    $image->make('images/bridge.jpg')->fit(1200, 630);
+    $image->make('../assets/images/bridge.jpg')->fit(1200, 630);
 
     // Grayscale and invert.
     $image->grayscale()->brightness(-40);
@@ -30,7 +30,7 @@ try {
             'height'     => 200,
             'horizontal' => 'left',
             'vertical'   => 'top',
-            'fontpath'   => 'fonts/merriweather.ttf',
+            'fontpath'   => '../assets/fonts/merriweather.ttf',
             'fontsize'   => 24,
             'lineheight' => 1.75,
             'color'      => '#ffffff',

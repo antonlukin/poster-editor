@@ -3,7 +3,7 @@
  * Wrapper for PHP's GD Library for easy image manipulation to resize, crop
  * and draw images on top of each other preserving transparency, writing text
  * with transparency and drawing shapes.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor

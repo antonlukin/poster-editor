@@ -1,7 +1,7 @@
 <?php
 /**
  * Resize image example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->resize(100, 200);
+    $image->make('../assets/images/bridge.jpg')->resize(100, 200);
 
     $image->show();
 

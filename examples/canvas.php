@@ -1,7 +1,7 @@
 <?php
 /**
  * Canvas image example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor

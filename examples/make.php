@@ -1,7 +1,7 @@
 <?php
 /**
  * Append image example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,10 +14,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make(file_get_contents('images/bridge.jpg'))->downsize(null, 1000)->invert();
+    $image->make(file_get_contents('../assets/images/bridge.jpg'))->downsize(null, 1000)->invert();
 
     $logo = new PosterEditor\PosterEditor();
-    $logo->make('images/logo.png')->downsize(null, 100)->invert();
+    $logo->make('../assets/images/logo.png')->downsize(null, 100)->invert();
 
     $image->insert($logo, array('y' => 0))->show('png');
 

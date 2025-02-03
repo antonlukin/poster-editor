@@ -1,7 +1,7 @@
 <?php
 /**
  * Chinese separators example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make(__DIR__ . '/../tests/images/bridge.jpg')->crop(
+    $image->make('../assets/images/bridge.jpg')->crop(
         900, 600,
         array(
             'x' => '0',
@@ -32,7 +32,7 @@ try {
             'width'      => 860,
             'horizontal' => 'start',
             'vertical'   => 'center',
-            'fontpath'   => __DIR__ . '/../tests/fonts/notosans-tc-regular.otf',
+            'fontpath'   => '../assets/fonts/notosans-tc-regular.otf',
             'lineheight' => 1.75,
             'fontsize'   => 18,
             'color'      => '#ffffff',

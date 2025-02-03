@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests core functionalities of the PosterEditor class.
- * php version 7.1
+ * php version 7.3
  *
  * @category Tests
  * @package  PosterEditorTest

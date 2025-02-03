@@ -1,7 +1,7 @@
 <?php
 /**
  * Opacity image and text support example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -17,7 +17,7 @@ try {
     $image->canvas(1000, 400);
 
     $image->insert(
-        'images/logo.png',
+        '../assets/images/logo.png',
         array(
             'x' => 600,
             'y' => 0,
@@ -26,7 +26,7 @@ try {
     );
 
     $image->insert(
-        'images/logo.png',
+        '../assets/images/logo.png',
         array(
             'x' => 600,
             'y' => 120,
@@ -35,7 +35,7 @@ try {
     );
 
     $image->insert(
-        'images/logo.png',
+        '../assets/images/logo.png',
         array(
             'x' => 600,
             'y' => 240,
@@ -49,7 +49,7 @@ try {
             'x'          => 0,
             'y'          => 0,
             'width'      => 600,
-            'fontpath'   => 'fonts/opensans.ttf',
+            'fontpath'   => '../assets/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#fff',
@@ -63,7 +63,7 @@ try {
             'x'          => 0,
             'y'          => 120,
             'width'      => 600,
-            'fontpath'   => 'fonts/opensans.ttf',
+            'fontpath'   => '../assets/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#fff',
@@ -77,7 +77,7 @@ try {
             'x'          => 0,
             'y'          => 240,
             'width'      => 600,
-            'fontpath'   => 'fonts/opensans.ttf',
+            'fontpath'   => '../assets/fonts/opensans.ttf',
             'fontsize'   => 20,
             'lineheight' => 1.5,
             'color'      => '#fff',

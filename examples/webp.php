@@ -1,7 +1,7 @@
 <?php
 /**
  * WebP support example.
- * php version 7.1
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/belgrade.webp')->fit(1000, 400)->blackout(50);
+    $image->make('../assets/images/belgrade.webp')->fit(1000, 400)->blackout(50);
     $image->show();
 
 } catch(Exception $e) {

@@ -1,7 +1,7 @@
 <?php
 /**
- * Text center image example.
- * php version 7.1
+ * Text center on image example.
+ * php version 7.3
  *
  * @category PHP
  * @package  PosterEditor
@@ -14,7 +14,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
     $image = new PosterEditor\PosterEditor();
-    $image->make('images/bridge.jpg')->fit(1200, 630);
+    $image->make('../assets/images/bridge.jpg')->fit(1200, 630);
     $image->grayscale()->brightness(-40);
 
     $image->text(
@@ -26,7 +26,7 @@ try {
             'height'     => 400,                  // Calculate height for nulled values
             'horizontal' => 'center',             // Can be left/right/center/justify
             'vertical'   => 'center',             // Can be top/center/bottom/justify
-            'fontpath'   => 'fonts/opensans.ttf',
+            'fontpath'   => '../assets/fonts/opensans.ttf',
             'fontsize'   => 24,
             'lineheight' => 1.75,
             'color'      => '#ffffff',
