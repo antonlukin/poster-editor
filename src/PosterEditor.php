@@ -924,7 +924,7 @@ class PosterEditor
         foreach ($words as $word) {
             $sentence = $this->removeExtraSpace($line . ' ' . $word);
 
-            if (empty($line)) {
+            if (strlen($line) < 1) {
                 $sentence = $word;
             }
 
