@@ -240,7 +240,7 @@ $logo->make('images/logo.png')->downsize(150, null);
 $image->insert($logo, array('x' => 50, 'y' => 50))->show();
 ```
 #### Result
-<img src="example/samples/append.jpg" alt="append image" width="400" />
+<img src="tests/references/append.jpg" alt="append image" width="400" />
 
 ### Draw and center multiline text
 ```php
@@ -269,7 +269,7 @@ $image->text(
 $image->show('jpg', 70);
 ```
 #### Result
-<img src="example/samples/center.jpg" alt="multiline centered text" width="400" />
+<img src="tests/references/center.jpg" alt="multiline centered text" width="400" />
 
 ### Draw and justify multiline text
 ```php
@@ -298,7 +298,7 @@ $image->text(
 $image->show('png');
 ```
 #### Result
-<img src="example/samples/justify.png" alt="multiline justified text" width="400" />
+<img src="tests/references/justify.png" alt="multiline justified text" width="400" />
 
 ### Use boundaries to draw one title right after another
 ```php
@@ -344,7 +344,7 @@ $image->text(
 $image->show();
 ```
 #### Result
-<img src="example/samples/boundary.jpg" alt="boundary" width="400" />
+<img src="tests/references/boundary.jpg" alt="boundary" width="400" />
 
 ### Draw shapes
 ```php
@@ -396,7 +396,7 @@ $image->line(
 $image->show('png');
 ```
 #### Result
-<img src="example/samples/shapes.png" alt="shapes result" width="400" />
+<img src="tests/references/shapes.png" alt="shapes result" width="400" />
 
 
 ## Contribution
