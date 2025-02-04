@@ -23,7 +23,7 @@ use Exception;
   * @package  PosterEditor
   * @author   Anton Lukin <anton@lukin.me>
   * @license  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  * @version  Release: 5.16
+  * @version  Release: 6.0
   * @link     https://github.com/antonlukin/poster-editor
   */
 class PosterEditor
